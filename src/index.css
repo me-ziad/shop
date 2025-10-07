@@ -1,0 +1,12 @@
+*{
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: underline;
+}
+ body{
+    overflow-x: hidden;
+ }
+ 
