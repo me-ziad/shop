@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../supabaseClient";
 import {Box,Typography,Card,CardContent,Avatar,CircularProgress,IconButton,TextField,Snackbar,Alert,Divider,Dialog,DialogTitle,DialogContent,Button,Tooltip,useTheme,} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";

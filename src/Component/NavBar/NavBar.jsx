@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../supabaseClient";
 import {AppBar,Toolbar,Typography,Button,Box,Badge,IconButton,Tooltip,Menu,MenuItem,Drawer,List,ListItem,ListItemButton,ListItemText,} from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
 import TranslateIcon from "@mui/icons-material/Translate";

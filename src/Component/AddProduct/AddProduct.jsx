@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { supabase } from '../supabaseClient'
+import { supabase } from '../../supabaseClient'
 import {Box, Typography, TextField, Button, CircularProgress,Avatar, Card, Divider,useTheme} from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'

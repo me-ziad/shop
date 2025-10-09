@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../supabaseClient";
 import {Box,Typography,TextField,Button,List,ListItem,ListItemAvatar,Avatar,ListItemText,Divider,} from "@mui/material";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";

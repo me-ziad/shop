@@ -5,20 +5,20 @@ import {
   Navigate
 } from 'react-router-dom';
 import Layout from './Layout/Layout';
-import NewAccount from './Auth/NewAccounts/NewAccount';
-import SignIn from './Auth/SignIn/SignIn';
-import NewPass from './newPass/NewPass';
-import Home from './Home/Home';
-import Profile from './Profile/Profile';
-import ResetPassword from './Auth/Reset-password';
-import Addproduct from './AddProduct/AddProduct';
-import ProfileDetails from './ProfileDetails/ProfileDetails';
-import Message from './Message/Message';
-import Cart from './Cart/Cart';
+import NewAccount from './Component/NewAccounts/NewAccount';
+import SignIn from './Component/SignIn/SignIn';
+import NewPass from './Component/newPass/NewPass';
+import Home from './Component/Home/Home';
+import Profile from './Component/Profile/Profile';
+ import Addproduct from './Component/AddProduct/AddProduct';
+import ProfileDetails from './Component/ProfileDetails/ProfileDetails';
+import Message from './Component/Message/Message';
+import Cart from './Component/Cart/Cart';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider, CssBaseline, createTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { supabase } from './supabaseClient';
+import ResetPassword from './Component/Reset-password';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);

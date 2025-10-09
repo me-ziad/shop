@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import Navbar from '../NavBar/NavBar';
+import Navbar from '../Component/NavBar/NavBar';
 import { supabase } from '../supabaseClient';
 
 export default function Layout({ toggleTheme, isDarkMode }) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../supabaseClient";
 import {Box,Typography,Avatar,CircularProgress,Dialog,DialogTitle,DialogContent,IconButton,Button,TextField,Chip,Card,CardContent,Divider,Slider,useMediaQuery,} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";

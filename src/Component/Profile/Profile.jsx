@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../../supabaseClient";
 import {Box,Typography,Avatar,Button,Tabs,Tab,CircularProgress,Dialog,DialogTitle,DialogContent,DialogActions,TextField,IconButton,Tooltip,useTheme,DialogContentText,Card,CardContent,} from "@mui/material";
 import {Edit,Add,EditOutlined,DeleteOutline,ChatBubbleOutline,Send} from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -871,7 +871,7 @@ export default function Profile() {
             </Box>
 
             {/* Comments */}
-            <DialogContentText
+            <DialogContentText component="div"
               sx={{
                 px: 3,
                 pb: 0,
