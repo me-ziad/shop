@@ -203,7 +203,7 @@ export default function ProfileDetails() {
   if (loading) {
     return (
       <Box textAlign="center" mt={5}>
-        <Loading></Loading>
+        <Loading/>
       </Box>
     );
   }
@@ -522,7 +522,7 @@ export default function ProfileDetails() {
         open={!!selectedProduct}
         onClose={() => setSelectedProduct(null)}
         fullWidth
-        maxWidth="lg"
+        maxWidth="100%"
         PaperProps={{
           sx: {
             position: "relative",
