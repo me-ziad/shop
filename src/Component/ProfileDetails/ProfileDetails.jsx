@@ -555,7 +555,7 @@ export default function ProfileDetails() {
               sx={{
                 position: "absolute",
                 top: 12,
-                ...(i18n.language === "ar" ? { left: 12 } : { right: 12 }),
+                ...(i18n.language === "en" ? { left: 12 } : { right: 12 }),
 
                 bgcolor:
                   theme.palette.mode === "dark"

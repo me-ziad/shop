@@ -198,25 +198,27 @@ useEffect(() => {
 
   const channel = supabase
     .channel("live-chat")
-    .on(
-      "postgres_changes",
-      {
-        event: "INSERT",
-        schema: "public",
-        table: "messages",
-      },
-      (payload) => {
-        const msg = payload.new;
-        if (
-          (msg.sender_id === currentUser.id &&
-            msg.receiver_id === otherUserId) ||
-          (msg.sender_id === otherUserId &&
-            msg.receiver_id === currentUser.id)
-        ) {
-          setMessages((prev) => [...prev, msg]);
-        }
-      }
-    )
+   .on(
+  "postgres_changes",
+  {
+    event: "INSERT",
+    schema: "public",
+    table: "messages",
+  },
+  (payload) => {
+    const msg = payload.new;
+    if (
+      (msg.sender_id === currentUser.id &&
+        msg.receiver_id === otherUserId) ||
+      (msg.sender_id === otherUserId &&
+        msg.receiver_id === currentUser.id)
+    ) {
+      setMessages((prev) => [...prev, msg]);
+      fetchContacts(); // ✅ حدّث الـ sidebar لما تيجي رسالة جديدة
+    }
+  }
+)
+
     .subscribe();
 
   return () => {
@@ -245,12 +247,17 @@ const sendMessage = async () => {
     .select();
 
   if (!error && data && data.length > 0) {
+    // ✅ حدّث الرسائل الحالية في الشات
     setMessages((prev) => [...prev, data[0]]);
+
+    // ✅ حدّث قائمة الـ contacts عشان تظهر آخر رسالة واسم وصورة المرسل
+    fetchContacts();
   }
 
   setNewMessage("");
   setProductImageVisible(false);
 };
+
 
   return (
     <Box
