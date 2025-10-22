@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { alpha } from "@mui/material/styles";
 import toast from "react-hot-toast";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
+import Loading from "../Loading/Loading";
 
 export default function Cart() {
   const { i18n } = useTranslation();
@@ -163,7 +164,7 @@ export default function Cart() {
   if (loading)
     return (
       <Box textAlign="center" mt={5}>
-        <CircularProgress />
+        <Loading/>
       </Box>
     );
 

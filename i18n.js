@@ -122,12 +122,14 @@ i18n
           profiledetails:'حساب المستخدم',
           Clicktoviewtheimage:' اضغط لعرض الصورة',
           Viewtheimage:'عرض الصورة',
-          Tocommunicatewiththeprogrammer:'للتواصل مع المبرمج'
+          Tocommunicatewiththeprogrammer:'للتواصل مع المبرمج',
+          NoProductsAvailable:'لا يوجد منتجات متاحة',
            }
       },
       en: {
         translation: {
           profiledetails :'Profile User',
+          NoProductsAvailable:'No Products Available',
           Viewtheimage:'View the image',
           Clicktoviewtheimage:'Click to view the image',
           Tocommunicatewiththeprogrammer:'To communicate with the programmer',

@@ -12,6 +12,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import { useTranslation } from "react-i18next";
 import MessageIcon from "@mui/icons-material/Message";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
+import Loading from "../Loading/Loading";
 
 export default function ProfileDetails() {
   const { id } = useParams();
@@ -202,7 +203,7 @@ export default function ProfileDetails() {
   if (loading) {
     return (
       <Box textAlign="center" mt={5}>
-        <CircularProgress />
+        <Loading></Loading>
       </Box>
     );
   }

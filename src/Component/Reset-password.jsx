@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../src/supabaseClient";
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Alert,
-  CircularProgress,
-  Paper,
-  useTheme,
-} from "@mui/material";
+import {Box,Button,TextField,Typography,Alert,CircularProgress,Paper,useTheme,} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 

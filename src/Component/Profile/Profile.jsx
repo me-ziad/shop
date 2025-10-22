@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { motion } from "framer-motion";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
+import Loading from "../Loading/Loading";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
@@ -347,7 +348,7 @@ export default function Profile() {
   if (loading)
     return (
       <Box textAlign="center" mt={5}>
-        <CircularProgress />
+        <Loading></Loading>
       </Box>
     );
   if (!profile) return null;
@@ -419,288 +420,298 @@ export default function Profile() {
           <Typography variant="h6" mb={2}>
             {t("PortWorks")} :
           </Typography>
-          <Box
-            display="grid"
-            gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))"
-            gap={3}
-          >
-            {products.map((product) => (
+
+          {products.length === 0 ? (
+          <Box textAlign="center" py={5}>
+            <Typography variant="h6" color="text.secondary">
+              {t("NoProductsAvailable") || "لا توجد منتجات حالياً"}
+            </Typography>
+          </Box>
+              ) : (
               <Box
-                key={product.id}
-                sx={{
-                  borderRadius: 1,
-                  boxShadow:
-                    theme.palette.mode === "dark"
-                      ? "0 8px 20px rgba(0,0,0,0.5)"
-                      : "0 8px 20px rgba(0,0,0,0.1)",
-                  border: `1px solid ${theme.palette.divider}`,
-                  overflow: "hidden",
-                  backgroundColor:
-                    theme.palette.mode === "dark" ? "#202020ff" : "#edededff",
-                  position: "relative",
-                  transition: "0.3s",
-                  height: 450,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  "&:hover": {
-                    boxShadow:
-                      theme.palette.mode === "dark"
-                        ? "0 12px 30px rgba(0,0,0,0.7)"
-                        : "0 12px 30px rgba(0,0,0,0.15)",
-                    transform: "translateY(-5px)",
-                  },
-                }}
+                display="grid"
+                gridTemplateColumns="repeat(4, 1fr)"
+                gap={3}
               >
-                {/* Product Image */}
-                {product.image_url && (
+                {products.map((product) => (
                   <Box
+                    key={product.id}
                     sx={{
-                      position: "relative",
-                      width: "100%",
-                      height: 220,
-                      cursor: "pointer",
-                      borderBottom: `1px solid ${theme.palette.divider}`,
-                      "&:hover .overlay": {
-                        opacity: 1,
-                      },
-                    }}
-                    onClick={() => setSelectedImage(product.image_url)}
-                  >
-                    <Box
-                      component="img"
-                      src={product.image_url}
-                      alt={product.name}
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        transition: "transform 0.3s ease",
-                        "&:hover": {
-                          transform: "scale(1.02)",
-                        },
-                      }}
-                    />
-
-                    <Box
-                      className="overlay"
-                      sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        bgcolor: "rgba(0,0,0,0.3)",
-                        color: "#fff",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                        opacity: 0,
-                        transition: "opacity 0.3s ease",
-                        zIndex: 2,
-                        pointerEvents: "none",
-                      }}
-                    >
-                      {t("Clicktoviewtheimage")}{" "}
-                      <CenterFocusStrongIcon
-                        sx={{ mx: 1 }}
-                      ></CenterFocusStrongIcon>
-                    </Box>
-                  </Box>
-                )}
-
-                {/* show full image */}
-                <Dialog
-                  open={Boolean(selectedImage)}
-                  onClose={() => setSelectedImage(null)}
-                  fullScreen
-                  PaperProps={{
-                    sx: {
-                      bgcolor: "rgba(0,0,0,0.95)",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      p: 0,
-                    },
-                  }}
-                >
-                  <IconButton
-                    onClick={() => setSelectedImage(null)}
-                    sx={{
-                      position: "absolute",
-                      top: 16,
-                      right: 16,
-                      color: "#fff",
-                      zIndex: 10,
-                    }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-
-                  <Box
-                    component="img"
-                    src={selectedImage}
-                    alt="عرض الصورة"
-                    sx={{
-                      width: {
-                        xs: "100%",
-                        sm: "90%",
-                        md: "80%",
-                        lg: "70%",
-                      },
-                      maxHeight: {
-                        xs: "80vh",
-                        sm: "85vh",
-                        md: "90vh",
-                      },
-                      objectFit: "contain",
-                      borderRadius: 2,
-                      boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-                      transition: "all 0.3s ease-in-out",
-                    }}
-                  />
-                </Dialog>
-
-                {/* Edit and delete icons */}
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    display: "flex",
-                    gap: 1,
-                  }}
-                >
-                  <Tooltip title="تعديل">
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => openEditModalFromProduct(product)}
-                      sx={{
-                        bgcolor:
-                          theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
-                        "&:hover": {
-                          bgcolor:
-                            theme.palette.mode === "dark"
-                              ? "#1976d2"
-                              : "#e3f2fd",
-                        },
-                      }}
-                    >
-                      <EditOutlined fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="حذف">
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() => handleDelete(product.id)}
-                      sx={{
-                        bgcolor:
-                          theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
-                        "&:hover": {
-                          bgcolor:
-                            theme.palette.mode === "dark"
-                              ? "#d32f2f"
-                              : "#ffebee",
-                        },
-                      }}
-                    >
-                      <DeleteOutline fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-
-                {/* Product Data */}
-                <Box
-                  px={2}
-                  py={2}
-                  display="flex"
-                  flexDirection="column"
-                  gap={1}
-                  sx={{ flexGrow: 1 }}
-                >
-                  <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    sx={{
-                      color: theme.palette.text.primary,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 1,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {product.name}
-                  </Typography>
-
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      backgroundColor:
-                        theme.palette.mode === "dark" ? "#2a2a2a" : "#f9f9f9",
-                      p: 1.5,
-                      borderRadius: 2,
-                      fontSize: 14,
-                      lineHeight: 1.6,
+                      borderRadius: 1,
                       boxShadow:
                         theme.palette.mode === "dark"
-                          ? "inset 0 1px 3px rgba(255,255,255,0.05)"
-                          : "inset 0 1px 3px rgba(0,0,0,0.05)",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
+                          ? "0 8px 20px rgba(0,0,0,0.5)"
+                          : "0 8px 20px rgba(0,0,0,0.1)",
+                      border: `1px solid ${theme.palette.divider}`,
                       overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      backgroundColor:
+                        theme.palette.mode === "dark" ? "#202020ff" : "#edededff",
+                      position: "relative",
+                      transition: "0.3s",
+                      height: 450,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "start",
+                      "&:hover": {
+                        boxShadow:
+                          theme.palette.mode === "dark"
+                            ? "0 12px 30px rgba(0,0,0,0.7)"
+                            : "0 12px 30px rgba(0,0,0,0.15)",
+                        transform: "translateY(-5px)",
+                      },
                     }}
                   >
-                    {product.description || "لا يوجد وصف"}
-                  </Typography>
+                    {/* Product Image */}
+                    {product.image_url && (
+                      <Box
+                        sx={{
+                          position: "relative",
+                          width: "100%",
+                          height: 220,
+                          cursor: "pointer",
+                          borderBottom: `1px solid ${theme.palette.divider}`,
+                          "&:hover .overlay": {
+                            opacity: 1,
+                          },
+                        }}
+                        onClick={() => setSelectedImage(product.image_url)}
+                      >
+                        <Box
+                          component="img"
+                          src={product.image_url}
+                          alt={product.name}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            transition: "transform 0.3s ease",
+                            "&:hover": {
+                              transform: "scale(1.02)",
+                            },
+                          }}
+                        />
 
-                  <Typography
-                    variant="body1"
-                    fontWeight="bold"
-                    sx={{
-                      color: theme.palette.primary.main,
-                      fontSize: 16,
-                    }}
-                  >
-                    {t("price")}: {product.price} {t("pound")}
-                  </Typography>
-                </Box>
+                        <Box
+                          className="overlay"
+                          sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            bgcolor: "rgba(0,0,0,0.3)",
+                            color: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 14,
+                            fontWeight: "bold",
+                            opacity: 0,
+                            transition: "opacity 0.3s ease",
+                            zIndex: 2,
+                            pointerEvents: "none",
+                          }}
+                        >
+                          {t("Clicktoviewtheimage")}{" "}
+                          <CenterFocusStrongIcon
+                            sx={{ mx: 1 }}
+                          ></CenterFocusStrongIcon>
+                        </Box>
+                      </Box>
+                    )}
 
-                {/* The comments icon is fixed at the end of the card */}
-                <Box display="flex" justifyContent="center" pb={2}>
-                  <Tooltip title="عرض التعليقات">
-                    <IconButton
-                      onClick={() => openCommentsModal(product)}
-                      sx={{
-                        bgcolor:
-                          theme.palette.mode === "dark" ? "#3a3a3a" : "#f5f5f5",
-                        "&:hover": {
-                          bgcolor:
-                            theme.palette.mode === "dark" ? "#555" : "#e0f7fa",
+                    {/* show full image */}
+                    <Dialog
+                      open={Boolean(selectedImage)}
+                      onClose={() => setSelectedImage(null)}
+                      fullScreen
+                      PaperProps={{
+                        sx: {
+                          bgcolor: "rgba(0,0,0,0.95)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          p: 0,
                         },
-                        width: 40,
-                        height: 40,
-                        borderRadius: 2,
-                        boxShadow: 1,
                       }}
                     >
-                      <ChatBubbleOutline
-                        sx={{ fontSize: 20, color: theme.palette.primary.main }}
+                      <IconButton
+                        onClick={() => setSelectedImage(null)}
+                        sx={{
+                          position: "absolute",
+                          top: 16,
+                          right: 16,
+                          color: "#fff",
+                          zIndex: 10,
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+
+                      <Box
+                        component="img"
+                        src={selectedImage}
+                        alt="عرض الصورة"
+                        sx={{
+                          width: {
+                            xs: "100%",
+                            sm: "90%",
+                            md: "80%",
+                            lg: "70%",
+                          },
+                          maxHeight: {
+                            xs: "80vh",
+                            sm: "85vh",
+                            md: "90vh",
+                          },
+                          objectFit: "contain",
+                          borderRadius: 2,
+                          boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+                          transition: "all 0.3s ease-in-out",
+                        }}
                       />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
+                    </Dialog>
+
+                    {/* Edit and delete icons */}
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 10,
+                        right: 10,
+                        display: "flex",
+                        gap: 1,
+                      }}
+                    >
+                      <Tooltip title="تعديل">
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          onClick={() => openEditModalFromProduct(product)}
+                          sx={{
+                            bgcolor:
+                              theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
+                            "&:hover": {
+                              bgcolor:
+                                theme.palette.mode === "dark"
+                                  ? "#1976d2"
+                                  : "#e3f2fd",
+                            },
+                          }}
+                        >
+                          <EditOutlined fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="حذف">
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => handleDelete(product.id)}
+                          sx={{
+                            bgcolor:
+                              theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
+                            "&:hover": {
+                              bgcolor:
+                                theme.palette.mode === "dark"
+                                  ? "#d32f2f"
+                                  : "#ffebee",
+                            },
+                          }}
+                        >
+                          <DeleteOutline fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+
+                    {/* Product Data */}
+                    <Box
+                      px={2}
+                      py={2}
+                      display="flex"
+                      flexDirection="column"
+                      gap={1}
+                      sx={{ flexGrow: 1 }}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        sx={{
+                          color: theme.palette.text.primary,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 1,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {product.name}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: theme.palette.text.secondary,
+                          backgroundColor:
+                            theme.palette.mode === "dark" ? "#2a2a2a" : "#f9f9f9",
+                          p: 1.5,
+                          borderRadius: 2,
+                          fontSize: 14,
+                          lineHeight: 1.6,
+                          boxShadow:
+                            theme.palette.mode === "dark"
+                              ? "inset 0 1px 3px rgba(255,255,255,0.05)"
+                              : "inset 0 1px 3px rgba(0,0,0,0.05)",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {product.description || "لا يوجد وصف"}
+                      </Typography>
+
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        sx={{
+                          color: theme.palette.primary.main,
+                          fontSize: 16,
+                        }}
+                      >
+                        {t("price")}: {product.price} {t("pound")}
+                      </Typography>
+                    </Box>
+
+                    {/* The comments icon is fixed at the end of the card */}
+                    <Box display="flex" justifyContent="center" pb={2}>
+                      <Tooltip title="عرض التعليقات">
+                        <IconButton
+                          onClick={() => openCommentsModal(product)}
+                          sx={{
+                            bgcolor:
+                              theme.palette.mode === "dark" ? "#3a3a3a" : "#f5f5f5",
+                            "&:hover": {
+                              bgcolor:
+                                theme.palette.mode === "dark" ? "#555" : "#e0f7fa",
+                            },
+                            width: 40,
+                            height: 40,
+                            borderRadius: 2,
+                            boxShadow: 1,
+                          }}
+                        >
+                          <ChatBubbleOutline
+                            sx={{ fontSize: 20, color: theme.palette.primary.main }}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
+                ))}
               </Box>
-            ))}
-          </Box>
-        </Box>
+                
+              )}
+              </Box>
       )}
       <Dialog
         open={!!commentsModalProduct}
