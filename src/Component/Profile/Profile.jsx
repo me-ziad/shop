@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import {Box,Typography,Avatar,Button,Tabs,Tab,CircularProgress,Dialog,DialogTitle,DialogContent,DialogActions,TextField,IconButton,Tooltip,useTheme,DialogContentText,Card,CardContent,} from "@mui/material";
-import {Edit,Add,EditOutlined,DeleteOutline,ChatBubbleOutline,Send} from "@mui/icons-material";
+import {Edit,Add,EditOutlined,DeleteOutline,ChatBubbleOutline,Send,} from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -10,6 +10,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { motion } from "framer-motion";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import Loading from "../Loading/Loading";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
@@ -422,335 +423,330 @@ export default function Profile() {
           </Typography>
 
           {products.length === 0 ? (
-          <Box textAlign="center" py={5}>
-            <Typography variant="h6" color="text.secondary">
-              {t("NoProductsAvailable") || "لا توجد منتجات حالياً"}
-            </Typography>
-          </Box>
-              ) : (
-              <Box
-                display="grid"
-                gridTemplateColumns="repeat(4, 1fr)"
-                gap={3}
-              >
-                {products.map((product) => (
-                  <Box
-                    key={product.id}
-                    sx={{
-                      borderRadius: 1,
+            <Box textAlign="center" py={5}>
+              <Typography variant="h6" color="text.secondary">
+                {t("NoProductsAvailable") || "لا توجد منتجات حالياً"}
+              </Typography>
+            </Box>
+          ) : (
+            <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={3}>
+              {products.map((product) => (
+                <Box
+                  key={product.id}
+                  sx={{
+                    borderRadius: 1,
+                    boxShadow:
+                      theme.palette.mode === "dark"
+                        ? "0 8px 20px rgba(0,0,0,0.5)"
+                        : "0 8px 20px rgba(0,0,0,0.1)",
+                    border: `1px solid ${theme.palette.divider}`,
+                    overflow: "hidden",
+                    backgroundColor:
+                      theme.palette.mode === "dark" ? "#202020ff" : "#edededff",
+                    position: "relative",
+                    transition: "0.3s",
+                    height: 450,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "start",
+                    "&:hover": {
                       boxShadow:
                         theme.palette.mode === "dark"
-                          ? "0 8px 20px rgba(0,0,0,0.5)"
-                          : "0 8px 20px rgba(0,0,0,0.1)",
-                      border: `1px solid ${theme.palette.divider}`,
-                      overflow: "hidden",
-                      backgroundColor:
-                        theme.palette.mode === "dark" ? "#202020ff" : "#edededff",
-                      position: "relative",
-                      transition: "0.3s",
-                      height: 450,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "start",
-                      "&:hover": {
-                        boxShadow:
-                          theme.palette.mode === "dark"
-                            ? "0 12px 30px rgba(0,0,0,0.7)"
-                            : "0 12px 30px rgba(0,0,0,0.15)",
-                        transform: "translateY(-5px)",
+                          ? "0 12px 30px rgba(0,0,0,0.7)"
+                          : "0 12px 30px rgba(0,0,0,0.15)",
+                      transform: "translateY(-5px)",
+                    },
+                  }}
+                >
+                  {/* Product Image */}
+                  {product.image_url && (
+                    <Box
+                      sx={{
+                        position: "relative",
+                        width: "100%",
+                        height: 220,
+                        cursor: "pointer",
+                        borderBottom: `1px solid ${theme.palette.divider}`,
+                        "&:hover .overlay": {
+                          opacity: 1,
+                        },
+                      }}
+                      onClick={() => setSelectedImage(product.image_url)}
+                    >
+                      <Box
+                        component="img"
+                        src={product.image_url}
+                        alt={product.name}
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          transition: "transform 0.3s ease",
+                          "&:hover": {
+                            transform: "scale(1.02)",
+                          },
+                        }}
+                      />
+
+                      <Box
+                        className="overlay"
+                        sx={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                          bgcolor: "rgba(0,0,0,0.3)",
+                          color: "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 14,
+                          fontWeight: "bold",
+                          opacity: 0,
+                          transition: "opacity 0.3s ease",
+                          zIndex: 2,
+                          pointerEvents: "none",
+                        }}
+                      >
+                        {t("Clicktoviewtheimage")}{" "}
+                        <CenterFocusStrongIcon
+                          sx={{ mx: 1 }}
+                        ></CenterFocusStrongIcon>
+                      </Box>
+                    </Box>
+                  )}
+
+                  {/* show full image */}
+                  <Dialog
+                    open={Boolean(selectedImage)}
+                    onClose={() => setSelectedImage(null)}
+                    fullScreen
+                    PaperProps={{
+                      sx: {
+                        bgcolor: "rgba(0,0,0,0.95)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        p: 0,
                       },
                     }}
                   >
-                    {/* Product Image */}
-                    {product.image_url && (
-                      <Box
-                        sx={{
-                          position: "relative",
-                          width: "100%",
-                          height: 220,
-                          cursor: "pointer",
-                          borderBottom: `1px solid ${theme.palette.divider}`,
-                          "&:hover .overlay": {
-                            opacity: 1,
-                          },
-                        }}
-                        onClick={() => setSelectedImage(product.image_url)}
-                      >
-                        <Box
-                          component="img"
-                          src={product.image_url}
-                          alt={product.name}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            transition: "transform 0.3s ease",
-                            "&:hover": {
-                              transform: "scale(1.02)",
-                            },
-                          }}
-                        />
-
-                        <Box
-                          className="overlay"
-                          sx={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
-                            bgcolor: "rgba(0,0,0,0.3)",
-                            color: "#fff",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: 14,
-                            fontWeight: "bold",
-                            opacity: 0,
-                            transition: "opacity 0.3s ease",
-                            zIndex: 2,
-                            pointerEvents: "none",
-                          }}
-                        >
-                          {t("Clicktoviewtheimage")}{" "}
-                          <CenterFocusStrongIcon
-                            sx={{ mx: 1 }}
-                          ></CenterFocusStrongIcon>
-                        </Box>
-                      </Box>
-                    )}
-
-                    {/* show full image */}
-                    <Dialog
-                      open={Boolean(selectedImage)}
-                      onClose={() => setSelectedImage(null)}
-                      fullScreen
-                      PaperProps={{
-                        sx: {
-                          bgcolor: "rgba(0,0,0,0.95)",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          p: 0,
-                        },
-                      }}
-                    >
-                      <IconButton
-                        onClick={() => setSelectedImage(null)}
-                        sx={{
-                          position: "absolute",
-                          top: 16,
-                          right: 16,
-                          color: "#fff",
-                          zIndex: 10,
-                        }}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-
-                      <Box
-                        component="img"
-                        src={selectedImage}
-                        alt="عرض الصورة"
-                        sx={{
-                          width: {
-                            xs: "100%",
-                            sm: "90%",
-                            md: "80%",
-                            lg: "70%",
-                          },
-                          maxHeight: {
-                            xs: "80vh",
-                            sm: "85vh",
-                            md: "90vh",
-                          },
-                          objectFit: "contain",
-                          borderRadius: 2,
-                          boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-                          transition: "all 0.3s ease-in-out",
-                        }}
-                      />
-                    </Dialog>
-
-                    {/* Edit and delete icons */}
-                    <Box
+                    <IconButton
+                      onClick={() => setSelectedImage(null)}
                       sx={{
                         position: "absolute",
-                        top: 10,
-                        right: 10,
-                        display: "flex",
-                        gap: 1,
+                        top: 16,
+                        right: 16,
+                        color: "#fff",
+                        zIndex: 10,
                       }}
                     >
-                      <Tooltip title="تعديل">
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          onClick={() => openEditModalFromProduct(product)}
-                          sx={{
-                            bgcolor:
-                              theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
-                            "&:hover": {
-                              bgcolor:
-                                theme.palette.mode === "dark"
-                                  ? "#1976d2"
-                                  : "#e3f2fd",
-                            },
-                          }}
-                        >
-                          <EditOutlined fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="حذف">
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() => handleDelete(product.id)}
-                          sx={{
-                            bgcolor:
-                              theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
-                            "&:hover": {
-                              bgcolor:
-                                theme.palette.mode === "dark"
-                                  ? "#d32f2f"
-                                  : "#ffebee",
-                            },
-                          }}
-                        >
-                          <DeleteOutline fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
+                      <CloseIcon />
+                    </IconButton>
 
-                    {/* Product Data */}
                     <Box
-                      px={2}
-                      py={2}
-                      display="flex"
-                      flexDirection="column"
-                      gap={1}
-                      sx={{ flexGrow: 1 }}
-                    >
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        sx={{
-                          color: theme.palette.text.primary,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 1,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {product.name}
-                      </Typography>
+                      component="img"
+                      src={selectedImage}
+                      alt="عرض الصورة"
+                      sx={{
+                        width: {
+                          xs: "100%",
+                          sm: "90%",
+                          md: "80%",
+                          lg: "70%",
+                        },
+                        maxHeight: {
+                          xs: "80vh",
+                          sm: "85vh",
+                          md: "90vh",
+                        },
+                        objectFit: "contain",
+                        borderRadius: 2,
+                        boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+                        transition: "all 0.3s ease-in-out",
+                      }}
+                    />
+                  </Dialog>
 
-                      <Typography
-                        variant="body2"
+                  {/* Edit and delete icons */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                      display: "flex",
+                      gap: 1,
+                    }}
+                  >
+                    <Tooltip title="تعديل">
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => openEditModalFromProduct(product)}
                         sx={{
-                          color: theme.palette.text.secondary,
-                          backgroundColor:
-                            theme.palette.mode === "dark" ? "#2a2a2a" : "#f9f9f9",
-                          p: 1.5,
-                          borderRadius: 2,
-                          fontSize: 14,
-                          lineHeight: 1.6,
-                          boxShadow:
-                            theme.palette.mode === "dark"
-                              ? "inset 0 1px 3px rgba(255,255,255,0.05)"
-                              : "inset 0 1px 3px rgba(0,0,0,0.05)",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {product.description || "لا يوجد وصف"}
-                      </Typography>
-
-                      <Typography
-                        variant="body1"
-                        fontWeight="bold"
-                        sx={{
-                          color: theme.palette.primary.main,
-                          fontSize: 16,
-                        }}
-                      >
-                        {t("price")}: {product.price} {t("pound")}
-                      </Typography>
-                    </Box>
-
-                    {/* The comments icon is fixed at the end of the card */}
-                    <Box display="flex" justifyContent="center" pb={2}>
-                      <Tooltip title="عرض التعليقات">
-                        <IconButton
-                          onClick={() => openCommentsModal(product)}
-                          sx={{
+                          bgcolor:
+                            theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
+                          "&:hover": {
                             bgcolor:
-                              theme.palette.mode === "dark" ? "#3a3a3a" : "#f5f5f5",
-                            "&:hover": {
-                              bgcolor:
-                                theme.palette.mode === "dark" ? "#555" : "#e0f7fa",
-                            },
-                            width: 40,
-                            height: 40,
-                            borderRadius: 2,
-                            boxShadow: 1,
-                          }}
-                        >
-                          <ChatBubbleOutline
-                            sx={{ fontSize: 20, color: theme.palette.primary.main }}
-                          />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
+                              theme.palette.mode === "dark"
+                                ? "#1976d2"
+                                : "#e3f2fd",
+                          },
+                        }}
+                      >
+                        <EditOutlined fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="حذف">
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleDelete(product.id)}
+                        sx={{
+                          bgcolor:
+                            theme.palette.mode === "dark" ? "#444" : "#f5f5f5",
+                          "&:hover": {
+                            bgcolor:
+                              theme.palette.mode === "dark"
+                                ? "#d32f2f"
+                                : "#ffebee",
+                          },
+                        }}
+                      >
+                        <DeleteOutline fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
-                ))}
-              </Box>
-                
-              )}
-              </Box>
+
+                  {/* Product Data */}
+                  <Box
+                    px={2}
+                    py={2}
+                    display="flex"
+                    flexDirection="column"
+                    gap={1}
+                    sx={{ flexGrow: 1 }}
+                  >
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      sx={{
+                        color: theme.palette.text.primary,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {product.name}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        backgroundColor:
+                          theme.palette.mode === "dark" ? "#2a2a2a" : "#f9f9f9",
+                        p: 1.5,
+                        borderRadius: 2,
+                        fontSize: 14,
+                        lineHeight: 1.6,
+                        boxShadow:
+                          theme.palette.mode === "dark"
+                            ? "inset 0 1px 3px rgba(255,255,255,0.05)"
+                            : "inset 0 1px 3px rgba(0,0,0,0.05)",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {product.description || "لا يوجد وصف"}
+                    </Typography>
+
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      sx={{
+                        color: theme.palette.primary.main,
+                        fontSize: 16,
+                      }}
+                    >
+                      {t("price")}: {product.price} {t("pound")}
+                    </Typography>
+                  </Box>
+
+                  {/* The comments icon is fixed at the end of the card */}
+                  <Box display="flex" justifyContent="center" pb={2}>
+                    <Tooltip title="عرض التعليقات">
+                      <IconButton
+                        onClick={() => openCommentsModal(product)}
+                        sx={{
+                          bgcolor:
+                            theme.palette.mode === "dark"
+                              ? "#3a3a3a"
+                              : "#f5f5f5",
+                          "&:hover": {
+                            bgcolor:
+                              theme.palette.mode === "dark"
+                                ? "#555"
+                                : "#e0f7fa",
+                          },
+                          width: 40,
+                          height: 40,
+                          borderRadius: 2,
+                          boxShadow: 1,
+                        }}
+                      >
+                        <ChatBubbleOutline
+                          sx={{
+                            fontSize: 20,
+                            color: theme.palette.primary.main,
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
       )}
       <Dialog
         open={!!commentsModalProduct}
         onClose={() => setCommentsModalProduct(null)}
-        fullWidth
-        maxWidth="md"
+        fullWidth={false}
+        maxWidth={false}
         PaperProps={{
           sx: {
             borderRadius: 2,
-            p: 0,
+            width: { xs: "100%", md: "90%" },
+            height: { xs: "95vh", md: "90vh" },
             display: "flex",
             flexDirection: "column",
-            height: "100vh",
-            overflow: "hidden",
+            position: "relative",
             bgcolor: theme.palette.background.paper,
             boxShadow:
               theme.palette.mode === "dark"
                 ? "0 20px 40px rgba(0,0,0,0.6)"
-                : "0 10px 30px rgba(0,0,0,0.1)",
-            position: "relative",
-            [theme.breakpoints.down("sm")]: {
-              width: "100vw",
-              height: "97vh",
-              margin: 0,
-              borderRadius: 0,
-              maxHeight: "none",
-            },
+                : 10,
+            overflow: "hidden",
           },
         }}
       >
         {commentsModalProduct && (
           <>
-            {/* Close button */}
+            {/* Close Button */}
             <IconButton
               onClick={() => setCommentsModalProduct(null)}
               sx={{
                 position: "absolute",
                 top: 12,
-                [document.dir === "rtl" ? "left" : "right"]: 12,
+                ...(isArabic ? { left: 30 } : { right: 20 }),
                 bgcolor:
                   theme.palette.mode === "dark"
                     ? "#444"
@@ -763,30 +759,30 @@ export default function Profile() {
               <CloseIcon />
             </IconButton>
 
-            {/* Model head */}
-            <Box sx={{ pt: { xs: 2, md: 4 }, px: { xs: 1, md: 4 } }}>
-              <Typography
-                variant="h6"
-                mb={2}
-                sx={{ color: theme.palette.text.primary }}
-              >
-                {t("ProductReviews")} : {commentsModalProduct.name}
-              </Typography>
+            {/* Main Content */}
+            <Box
+              sx={{
+                display: "flex",
+                flex: 1,
+                flexDirection: {
+                  xs: "column",
+                  md: isArabic ? "row" : "row-reverse",
+                },
+                overflow: "hidden",
+              }}
+            >
+              {/* Product Image */}
               <Box
                 sx={{
+                  flex: { xs: "unset", md: 1 },
+                  p: 2,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                   position: "relative",
-                  width: "100%",
-                  height: { xs: 200, sm: 50, md: 240 },
-                  mb: 2,
-                  borderRadius: 3,
                   cursor: "pointer",
-                  boxShadow:
-                    theme.palette.mode === "dark"
-                      ? "0 4px 12px rgba(255,255,255,0.1)"
-                      : "0 4px 12px rgba(0,0,0,0.1)",
-                  "&:hover .overlay": {
-                    opacity: 1,
-                  },
+                  "&:hover .overlay": { opacity: 1 },
+                  maxHeight: { xs: "30%", md: "100%" },
                 }}
                 onClick={() => setSelectedImage(commentsModalProduct.image_url)}
               >
@@ -796,15 +792,15 @@ export default function Profile() {
                   alt={commentsModalProduct.name}
                   sx={{
                     width: "100%",
-                    height: "100%",
+                    height: { xs: 200, md: "100%" },
                     objectFit: "cover",
-                    transition: "transform 0.3s ease",
-                    "&:hover": {
-                      transform: "scale(1.02)",
-                    },
+                    borderRadius: 2,
+                    boxShadow:
+                      theme.palette.mode === "dark"
+                        ? "0 4px 12px rgba(255,255,255,0.1)"
+                        : "0 4px 12px rgba(0,0,0,0.1)",
                   }}
                 />
-
                 <Box
                   className="overlay"
                   sx={{
@@ -823,108 +819,104 @@ export default function Profile() {
                     opacity: 0,
                     transition: "opacity 0.3s ease",
                     zIndex: 2,
-                    pointerEvents: "none",
                   }}
                 >
                   {t("Clicktoviewtheimage")}
                 </Box>
               </Box>
-              <Dialog
-                open={Boolean(selectedImage)}
-                onClose={() => setSelectedImage(null)}
-                fullScreen
-                PaperProps={{
-                  sx: {
-                    bgcolor: "rgba(0,0,0,0.95)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    p: 0,
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => setSelectedImage(null)}
-                  sx={{
-                    position: "absolute",
-                    top: 16,
-                    right: 16,
-                    color: "#fff",
-                    zIndex: 10,
-                  }}
+
+              {/* Comments Section */}
+                            <Box
+                    sx={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      borderLeft: isArabic
+                        ? "none"
+                        : `1px solid ${theme.palette.divider}`,
+                      borderRight: isArabic
+                        ? `1px solid ${theme.palette.divider}`
+                        : "none",
+                      bgcolor: theme.palette.mode === "dark" ? "#2a2a2a" : "#fafafa",
+                      overflowY: "auto",
+                      maxHeight: "100vh",
+
+                      /* ==== Scrollbar Styles ==== */
+                      "&::-webkit-scrollbar": {
+                        width: "8px", 
+                      },
+                      "&::-webkit-scrollbar-track": {
+                        background: theme.palette.mode === "dark" ? "#1f1f1f" : "#f0f0f0",
+                        borderRadius: "4px",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: theme.palette.mode === "dark" ? "#555" : "#aaa",
+                        borderRadius: "4px",
+                        border: "2px solid transparent",
+                        backgroundClip: "content-box",
+                      },
+                      "&::-webkit-scrollbar-thumb:hover": {
+                        backgroundColor: theme.palette.mode === "dark" ? "#777" : "#888",
+                      },
+                    }}
+                  >
+                <Typography
+                  variant="h6"
+                  fontWeight="bold"
+                  sx={{ px: 3, py: 2, textAlign: isArabic ? "right" : "left" }}
                 >
-                  <CloseIcon />
-                </IconButton>
+                  {t("Commentson")} : {commentsModalProduct.name}
+                </Typography>
 
                 <Box
-                  component="img"
-                  src={selectedImage}
-                  alt="عرض الصورة"
                   sx={{
-                    width: {
-                      xs: "100%",
-                      sm: "90%",
-                      md: "80%",
-                      lg: "70%",
-                    },
-                    maxHeight: {
-                      xs: "80vh",
-                      sm: "85vh",
-                      md: "90vh",
-                    },
-                    objectFit: "contain",
-                    borderRadius: 2,
-                    boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-                    transition: "all 0.3s ease-in-out",
+                    px: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
                   }}
-                />
-              </Dialog>
-            </Box>
-
-            {/* Comments */}
-            <DialogContentText component="div"
-              sx={{
-                px: 3,
-                pb: 0,
-                [theme.breakpoints.down("sm")]: { px: 1 },
-                overflowY: "auto",
-                flex: 1,
-              }}
-            >
-              {comments.length === 0 ? (
-                <Typography sx={{ color: theme.palette.text.secondary }}>
-                  {t("Therearenocommentsyet")}
-                </Typography>
-              ) : (
-                <Box display="flex" flexDirection="column" gap={2}>
-                  {comments.map((c) => (
-                    <Card
-                      key={c.id}
-                      elevation={0}
-                      sx={{
-                        borderRadius: 2,
-                        bgcolor:
-                          theme.palette.mode === "dark" ? "#2d2d2d" : "#fafafa",
-                        pt: 1,
-                      }}
-                    >
-                      <CardContent sx={{ display: "flex", gap: 2, padding: 0 }}>
-                        <IconButton
-                          onClick={() =>
-                            navigate(`/profiledetails/${c.profiles?.id}`)
-                          }
+                >
+                  {comments.length === 0 ? (
+                    <Typography sx={{ color: theme.palette.text.secondary }}>
+                      {t("Therearenocommentsyet")}
+                    </Typography>
+                  ) : (
+                    [...comments]
+                      .sort(
+                        (a, b) =>
+                          new Date(b.created_at) - new Date(a.created_at)
+                      )
+                      .map((c) => (
+                        <Card
+                          key={c.id}
+                          elevation={0}
+                          sx={{
+                             bgcolor:
+                              theme.palette.mode === "dark"?  'transparent': 'transparent',
+                            px: 2,
+                            py: 1,
+                            display: "flex",
+                            flexDirection: isArabic ? "row" : "row-reverse",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 2,
+                            borderBottom: theme.palette.mode === "dark" ? '2px solid #ffffff22' : '2px solid #2222',
+                          }}
                         >
-                          <Avatar
-                            src={
-                              c.profiles?.avatar_url || "/default-avatar.png"
-                            }
-                          />
-                        </IconButton>
-                        <Box flex={1}>
+                          <IconButton sx={{ order: isArabic ? 1 : 3 }}>
+                            <Avatar
+                              src={
+                                c.profiles?.avatar_url || "/default-avatar.png"
+                              }
+                            />
+                          </IconButton>
+
                           <Box
-                            display="flex"
-                            justifyContent="space-between"
-                            alignItems="center"
+                            flex={1}
+                            sx={{
+                              textAlign: isArabic ? "right" : "left",
+                              order: 2,
+                            }}
                           >
                             <Typography
                               variant="body2"
@@ -933,78 +925,60 @@ export default function Profile() {
                                 cursor: "pointer",
                                 color: theme.palette.text.primary,
                               }}
-                              onClick={() =>
-                                navigate(`/profiledetails/${c.profiles?.id}`)
-                              }
                             >
                               {c.profiles?.full_name || "—"}
                             </Typography>
-
-                            {/* Delete button if the user is the commenter */}
-                            {currentUserId === c.user_id && (
-                              <Tooltip title="حذف التعليق">
-                                <IconButton
-                                  size="small"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteComment(c.id);
-                                  }}
-                                  sx={{
-                                    bgcolor:
-                                      theme.palette.mode === "dark"
-                                        ? "#444"
-                                        : "#eee",
-                                    "&:hover": { bgcolor: "#fdd" },
-                                    transform: "translateY(20px)",
-                                    mx: 3,
-                                  }}
-                                >
-                                  <DeleteOutlineIcon
-                                    fontSize="small"
-                                    sx={{ color: "red" }}
-                                  />
-                                </IconButton>
-                              </Tooltip>
-                            )}
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: theme.palette.text.secondary,
+                                fontSize: 13,
+                              }}
+                            >
+                              {c.content}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: theme.palette.text.disabled,
+                                fontSize: 11,
+                              }}
+                            >
+                              {new Date(c.created_at).toLocaleString(
+                                document.dir === "rtl" ? "ar-EG" : "en-US"
+                              )}
+                            </Typography>
                           </Box>
 
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: theme.palette.text.secondary,
-                              fontSize: 13,
-                            }}
-                          >
-                            {c.content}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: theme.palette.text.disabled,
-                              fontSize: 11,
-                            }}
-                          >
-                            {new Date(c.created_at).toLocaleString("ar-EG")}
-                          </Typography>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  ))}
+                          {currentUserId === c.user_id && (
+                            <IconButton
+                              onClick={() => handleDeleteComment(c.id)}
+                              sx={{ order: isArabic ? 3 : 1 }}
+                            >
+                              <DeleteIcon fontSize="small" color="error" />
+                            </IconButton>
+                          )}
+                        </Card>
+                      ))
+                  )}
                 </Box>
-              )}
-            </DialogContentText>
+              </Box>
+            </Box>
 
-            {/* Comment entry */}
+            {/* Comment Input */}
             <Box
               sx={{
                 px: { xs: 1, md: 3 },
                 py: { xs: 1, md: 3 },
                 borderTop: `1px solid ${theme.palette.divider}`,
-                backgroundColor:
-                  theme.palette.mode === "dark" ? "#3b3b3bff" : "#fff",
+                bgcolor: theme.palette.mode === "dark" ? "#3a3a3a" : "#fff",
               }}
             >
-              <Box display="flex" gap={2}>
+              <Box
+                display="flex"
+                gap={2}
+                flexDirection={document.dir === "rtl" ? "row" : "row-reverse"}
+              >
                 <TextField
                   fullWidth
                   multiline
@@ -1013,7 +987,7 @@ export default function Profile() {
                   onChange={(e) => setCommentText(e.target.value)}
                   placeholder={t("Writeyourcomment")}
                   sx={{
-                    borderRadius: 1,
+                    borderRadius: 3,
                     "& .MuiInputBase-root": {
                       borderRadius: 3,
                       boxShadow:
@@ -1034,12 +1008,11 @@ export default function Profile() {
                 <Button
                   variant="contained"
                   color="primary"
-                  startIcon={<Send sx={{ ml: isArabic ? 1.5 : 0 }} />}
+                  startIcon={<Send sx={{ mx: 1 }} />}
                   sx={{
                     height: "fit-content",
                     alignSelf: "flex-start",
                     borderRadius: 3,
-                    py: { md: 1 },
                   }}
                   disabled={!commentText.trim()}
                   onClick={handleAddComment}

@@ -2,8 +2,7 @@ import React from "react";
 import { Box, keyframes } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-// حركات أنيميشن
-const pulse = keyframes`
+ const pulse = keyframes`
   0%, 100% {
     transform: scale(1);
     filter: drop-shadow(0 0 10px #42a5f5);
@@ -13,8 +12,6 @@ const pulse = keyframes`
     filter: drop-shadow(0 0 15px #2196f3);
   }
 `;
-
- 
 
 export default function Loading() {
   return (

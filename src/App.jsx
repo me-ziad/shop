@@ -19,6 +19,7 @@ import { ThemeProvider, CssBaseline, createTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { supabase } from './supabaseClient';
 import ResetPassword from './Component/Reset-password';
+import ProductDetails from './Component/ProductDetails/ProductDetails';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -47,7 +48,7 @@ function App() {
     palette: {
       mode: isDarkMode ? 'dark' : 'light',
       background: {
-        default: isDarkMode ? '#121212' : '#ffffff'
+        default: isDarkMode ? '#121212' : '#edededff'
       }
     },
     direction: isArabic ? 'rtl' : 'ltr',
@@ -90,6 +91,7 @@ function App() {
         { path: 'resetpass', element: <ResetPassword /> },
         { path: 'profile', element: user ? <Profile /> : <Navigate to="/signin" /> },
         { path: 'addProduct', element: user ? <Addproduct /> : <Navigate to="/signin" /> },
+        { path: '/product/:id', element: user ? <ProductDetails /> : <Navigate to="/signin" /> },
         { path: 'profiledetails/:id', element: user ? <ProfileDetails /> : <Navigate to="/signin" /> },
         { path: 'message/:otherUserId?', element: user ? <Message /> : <Navigate to="/signin" /> },
         { path: 'cart', element: user ? <Cart /> : <Navigate to="/signin" /> }

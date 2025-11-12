@@ -17,12 +17,12 @@ import CallIcon from "@mui/icons-material/Call";
 import Popover from "@mui/material/Popover";
 import AddShoppingCartRoundedIcon from "@mui/icons-material/AddShoppingCartRounded";
 export default function Navbar({ toggleTheme, isDarkMode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [drawerOpen, setDrawerOpen] = useState(false); 
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [language, setLanguage] = useState(
-    localStorage.getItem("preferredLanguage") || "ar" 
+    localStorage.getItem("preferredLanguage") || "ar"
   );
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -103,7 +103,7 @@ export default function Navbar({ toggleTheme, isDarkMode }) {
           "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
         }}
       >
-        Sign In
+        {t("SignIn")}
       </Button>
       <Button
         component={Link}
@@ -117,7 +117,7 @@ export default function Navbar({ toggleTheme, isDarkMode }) {
           "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
         }}
       >
-        Register
+        {t("Register")}
       </Button>
     </>
   );
@@ -127,7 +127,12 @@ export default function Navbar({ toggleTheme, isDarkMode }) {
       <AppBar
         position="sticky"
         sx={{
-          bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "primary.main",
+          bgcolor:
+            theme.palette.mode === "dark"
+              ? "rgba(30, 30, 30, 0.8)"
+              : "primary.main",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
           boxShadow: 4,
         }}
       >
@@ -173,28 +178,28 @@ export default function Navbar({ toggleTheme, isDarkMode }) {
                 <Button
                   component={Link}
                   to="/"
-                  sx={{ color: "#fff", textTransform: "none" }}
+                  sx={{ color: "#fff", textTransform: "none", fontSize: 17 }}
                 >
                   {t("Allproducts")}
                 </Button>
                 <Button
                   component={Link}
                   to="/addProduct"
-                  sx={{ color: "#fff", textTransform: "none" }}
+                  sx={{ color: "#fff", textTransform: "none", fontSize: 17 }}
                 >
                   {t("addProduct")}
                 </Button>
                 <Button
                   component={Link}
                   to="/cart"
-                  sx={{ color: "#fff", textTransform: "none" }}
+                  sx={{ color: "#fff", textTransform: "none", fontSize: 17 }}
                 >
                   {t("cart")}
                 </Button>
                 <Button
                   component={Link}
                   to="/profile"
-                  sx={{ color: "#fff", textTransform: "none" }}
+                  sx={{ color: "#fff", textTransform: "none", fontSize: 17 }}
                 >
                   {t("profile")}
                 </Button>
@@ -314,9 +319,7 @@ export default function Navbar({ toggleTheme, isDarkMode }) {
         </Box>
       </Popover>
 
-      {/* Drawer for Mobile */}
       {/* Mobile View */}
-
       {/* Drawer for Mobile */}
       <Drawer
         anchor={language === "ar" ? "right" : "left"}
@@ -327,7 +330,6 @@ export default function Navbar({ toggleTheme, isDarkMode }) {
             width: 260,
             bgcolor: theme.palette.mode === "dark" ? "#1c1c1c" : "#fff",
             height: "100%",
-
             transform: "none !important",
             direction: "ltr",
             display: "flex",
@@ -347,12 +349,12 @@ export default function Navbar({ toggleTheme, isDarkMode }) {
               <>
                 <ListItem disablePadding>
                   <ListItemButton component={Link} to="/signin">
-                    <ListItemText primary="Sign In" />
+                    <ListItemText primary={t("SignIn")} />
                   </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
                   <ListItemButton component={Link} to="/newauth">
-                    <ListItemText primary="Register" />
+                    <ListItemText primary={t("Register")} />
                   </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>

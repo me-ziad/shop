@@ -102,7 +102,7 @@ const handleAddProduct = async () => {
   setLoading(false);
 };
   return (
-    <Box maxWidth="1000px" mx="auto" mt={5}>
+    <Box maxWidth="1300px" sx={{px:{xs:1,md:6}}} mx="auto" mt={5}>
       <Card elevation={5} sx={{ borderRadius: 4, overflow: 'hidden', p: 3 }}>
         <Typography variant="h5" fontWeight="bold" mb={3}>
           {t('ControlPanelAddNewProduct')}

@@ -5,6 +5,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import {Box,Button,TextField,Typography,CircularProgress,Alert,useTheme,Paper,IconButton,} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
 
 export default function SignIn() {
   const { i18n } = useTranslation();
@@ -188,42 +190,57 @@ const handleSignIn = async () => {
           >
             {t("Login")}
           </Typography>
+<TextField
+  label={t("email")}
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  fullWidth
+  size="medium"
+  margin="dense"
+  variant="outlined"
+  InputProps={{
+    startAdornment: <EmailIcon sx={{ color: "gray", mr: 1 }} />,
+  }}
+  error={!!errorMsg && errorMsg.includes("email")}
+  helperText={!!errorMsg && errorMsg.includes("email") ? errorMsg : ""}
+  sx={{
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 3,
+      bgcolor: theme.palette.mode === "dark" ? "#111316" : "#fff",
+      "&.Mui-focused": {
+        borderColor: theme.palette.primary.main,
+        boxShadow: `0 0 0 2px ${theme.palette.primary.light}33`,
+      },
+    },
+  }}
+/>
 
-          <TextField
-            label={t("email")}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fullWidth
-            size="small"
-            margin="dense"
-            variant="outlined"
-            inputProps={{ autoComplete: "email" }}
-            sx={{
-              "& .MuiInputBase-root": {
-                borderRadius: 2,
-                bgcolor: theme.palette.mode === "dark" ? "#111316" : "#fff",
-              },
-            }}
-          />
-
-          <TextField
-            label={t("password")}
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            fullWidth
-            size="small"
-            margin="dense"
-            variant="outlined"
-            inputProps={{ autoComplete: "current-password" }}
-            sx={{
-              "& .MuiInputBase-root": {
-                borderRadius: 2,
-                bgcolor: theme.palette.mode === "dark" ? "#111316" : "#fff",
-              },
-            }}
-          />
+<TextField
+  label={t("password")}
+  type="password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  fullWidth
+  size="medium"
+  margin="dense"
+  variant="outlined"
+  InputProps={{
+    startAdornment: <LockIcon sx={{ color: "gray", mr: 1 }} />,
+  }}
+  error={!!errorMsg && errorMsg.includes("Password")}
+  helperText={!!errorMsg && errorMsg.includes("Password") ? errorMsg : ""}
+  sx={{
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 3,
+      bgcolor: theme.palette.mode === "dark" ? "#111316" : "#fff",
+      "&.Mui-focused": {
+        borderColor: theme.palette.primary.main,
+        boxShadow: `0 0 0 2px ${theme.palette.primary.light}33`,
+      },
+    },
+  }}
+/>
 
           <Button
             variant="contained"

@@ -25,8 +25,7 @@ export default function Cart() {
   const [commentsMap, setCommentsMap] = useState({});
   const [commentTextMap, setCommentTextMap] = useState({});
   const [currentUserId, setCurrentUserId] = useState(null);
-  const [selectedProductForComments, setSelectedProductForComments] =
-    useState(null);
+  const [selectedProductForComments, setSelectedProductForComments] =useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
   // Set the page title to "Cart" when the component mounts
@@ -506,229 +505,208 @@ export default function Cart() {
         </Box>
       )}
 
-      {/* Modal Comments */}
-      <Dialog
-        open={!!selectedProductForComments}
-        onClose={closeCommentsModal}
-        fullWidth
-        maxWidth="md"
-        PaperProps={{
-          sx: {
-            borderRadius: 4,
-            boxShadow:
-              theme.palette.mode === "dark"
-                ? "0 20px 40px rgba(0,0,0,0.6)"
-                : 10,
-            bgcolor: theme.palette.background.paper,
-            maxHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            position: "relative",
-            [theme.breakpoints.down("sm")]: {
-              width: "100vw",
-              height: "97vh",
-              margin: 0,
-              borderRadius: 0,
-              maxHeight: "none",
+      {/* modal */}
+        <Dialog
+          open={!!selectedProductForComments}
+          onClose={closeCommentsModal}
+        maxWidth={false}
+        fullWidth={false}
+          PaperProps={{
+            sx: {
+              borderRadius: 2,
+              width: {xs:'100%',md:'90%'},
+              boxShadow:
+                theme.palette.mode === "dark"
+                  ? "0 20px 40px rgba(0,0,0,0.6)"
+                  : 10,
+              bgcolor: theme.palette.background.paper,
+              height: { xs: "95vh", md: "90vh" },
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
             },
-          },
-        }}
-      >
-        {selectedProductForComments && (
-          <>
-            {/* Close button */}
-            <IconButton
-              onClick={closeCommentsModal}
-              sx={{
-                position: "absolute",
-                top: 12,
-                ...(i18n.language === "ar" ? { left: 12 } : { right: 12 }),
-
-                bgcolor:
-                  theme.palette.mode === "dark"
-                    ? "#444"
-                    : "rgba(255,255,255,0.8)",
-                color: theme.palette.text.primary,
-                zIndex: 10,
-                boxShadow: 1,
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-
-            {/* Product image outside the scroll */}
-            <Box sx={{ px: { sm: 0, md: 6 }, pt: 1 }}>
-              <Typography
-                variant="h6"
-                mb={2}
-                mt={1}
-                sx={{ color: theme.palette.text.primary }}
+          }}
+        >
+          {selectedProductForComments && (
+            <>
+              {/* Close Button */}
+              <IconButton
+                onClick={closeCommentsModal}
+                sx={{
+                  position: "absolute",
+                  top: 12,
+                  ...(isArabic ? { left: 30 } : { right: 20 }),
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "#444"
+                      : "rgba(255,255,255,0.8)",
+                  color: theme.palette.text.primary,
+                  zIndex: 10,
+                  boxShadow: 1,
+                }}
               >
-                {t("Commentson")} : {selectedProductForComments.name}
-              </Typography>
+                <CloseIcon />
+              </IconButton>
+
+              {/* Main Content */}
               <Box
                 sx={{
-                  position: "relative",
-                  width: "100%",
-                  height: { xs: 200, sm: 200, md: 240 },
-                  mb: 2,
-                  borderRadius: 3,
-                  cursor: "pointer",
-                  boxShadow:
-                    theme.palette.mode === "dark"
-                      ? "0 4px 12px rgba(255,255,255,0.1)"
-                      : "0 4px 12px rgba(0,0,0,0.1)",
+                  display: "flex",
+                  flex: 1,
+          flexDirection: {
+              xs: "column",
+              md: isArabic ? "row" : "row-reverse",
+            },
                   overflow: "hidden",
-                  "&:hover .overlay": {
-                    opacity: 1,
-                  },
                 }}
-                onClick={() =>
-                  setSelectedImage(selectedProductForComments.image_url)
-                }
               >
+                {/* Product Image */}
                 <Box
-                  component="img"
-                  src={selectedProductForComments.image_url}
-                  alt={selectedProductForComments.name}
                   sx={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    transition: "transform 0.3s ease",
-                    "&:hover": {
-                      transform: "scale(1.02)",
-                    },
-                  }}
-                />
-
-                <Box
-                  className="overlay"
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    bgcolor: "rgba(0,0,0,0.3)",
-                    color: "#fff",
+                    flex: { xs: "unset", md: 1 },
+                    order: isArabic ? 1 : 1,
+                    p: 2,
                     display: "flex",
-                    alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 14,
-                    fontWeight: "bold",
-                    opacity: 0,
-                    transition: "opacity 0.3s ease",
-                    zIndex: 2,
-                    pointerEvents: "none",
+                    alignItems: "center",
+                    position: "relative",
+                    cursor: "pointer",
+                    "&:hover .overlay": { opacity: 1 },
+                    maxHeight: { xs: "30%", md: "100%" },
                   }}
+                  onClick={() =>
+                    setSelectedImage(selectedProductForComments.image_url)
+                  }
                 >
-                  {t("Clicktoviewtheimage")}
+                  <Box
+                    component="img"
+                    src={selectedProductForComments.image_url}
+                    alt={selectedProductForComments.name}
+                    sx={{
+                      width: { xs: "100%", md: "100%" },
+                      height: { xs: 200, md: "100%" },
+                      objectFit: "cover",
+                      borderRadius: 2,
+                      boxShadow:
+                        theme.palette.mode === "dark"
+                          ? "0 4px 12px rgba(255,255,255,0.1)"
+                          : "0 4px 12px rgba(0,0,0,0.1)",
+                    }}
+                  />
+                  <Box
+                    className="overlay"
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      bgcolor: "rgba(0,0,0,0.3)",
+                      color: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 14,
+                      fontWeight: "bold",
+                      opacity: 0,
+                      transition: "opacity 0.3s ease",
+                      zIndex: 2,
+                    }}
+                  >
+                    {t("Clicktoviewtheimage")} <CenterFocusStrongIcon sx={{ mx: 1 }} />
+                  </Box>
                 </Box>
-              </Box>
 
-              {/* full image screen  */}
-
-              <Dialog
-                open={Boolean(selectedImage)}
-                onClose={() => setSelectedImage(null)}
-                fullScreen
-                PaperProps={{
-                  sx: {
-                    bgcolor: "rgba(0,0,0,0.95)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    p: 0,
-                  },
-                }}
-              >
-                <IconButton
-                  onClick={() => setSelectedImage(null)}
-                  sx={{
-                    position: "absolute",
-                    top: 16,
-                    right: 16,
-                    color: "#fff",
-                    zIndex: 10,
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-
-                <Box
-                  component="img"
-                  src={selectedImage}
-                  alt="عرض الصورة"
-                  sx={{
-                    width: {
-                      xs: "100%",
-                      sm: "90%",
-                      md: "80%",
-                      lg: "70%",
-                    },
-                    maxHeight: {
-                      xs: "80vh",
-                      sm: "85vh",
-                      md: "90vh",
-                    },
-                    objectFit: "contain",
-                    borderRadius: 2,
-                    boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-                    transition: "all 0.3s ease-in-out",
-                  }}
-                />
-              </Dialog>
-            </Box>
-
-            {/* Comments inside scroll */}
-            <DialogContent
-              sx={{
-                px: 4,
-                [theme.breakpoints.down("sm")]: { padding: 1 },
-                pb: 2,
-                overflowY: "auto",
-                flex: 1,
-              }}
-            >
-              {Array.isArray(commentsMap[selectedProductForComments?.id]) &&
-              commentsMap[selectedProductForComments.id].length > 0 ? (
-                <Box display="flex" flexDirection="column" gap={2}>
-                  {commentsMap[selectedProductForComments.id].map((c) => (
-                    <Card
-                      key={c.id}
-                      elevation={0}
+                {/* Comments Section */}
+                 <Box
                       sx={{
-                        borderRadius: 2,
-                        bgcolor:
-                          theme.palette.mode === "dark" ? "#2d2d2d" : "#fafafa",
-                        px: 2,
-                        py: 1,
+                        order: isArabic ? 2 : 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        borderLeft: isArabic ? "none" : `1px solid ${theme.palette.divider}`,
+                        borderRight: isArabic ? `1px solid ${theme.palette.divider}` : "none",
+                        bgcolor: theme.palette.mode === "dark" ? "#2a2a2a" : "#fafafa",
+                        overflowY: "auto",
+                        maxHeight: '100vh',
+                        flex: 1,
+                        /* ==== Scrollbar Styles ==== */
+                        "&::-webkit-scrollbar": {
+                          width: "8px",
+                        },
+                        "&::-webkit-scrollbar-track": {
+                          background: theme.palette.mode === "dark" ? "#1f1f1f" : "#f0f0f0",
+                          borderRadius: "4px",
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: theme.palette.mode === "dark" ? "#555" : "#aaa",
+                          borderRadius: "4px",
+                          border: "2px solid transparent",
+                          backgroundClip: "content-box",
+                        },
+                        "&::-webkit-scrollbar-thumb:hover": {
+                          backgroundColor: theme.palette.mode === "dark" ? "#777" : "#888",
+                        },
                       }}
                     >
-                      <CardContent sx={{ display: "flex", gap: 2, padding: 0 }}>
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                    sx={{
+                      px: 3,
+                      py: 2,
+                      textAlign: isArabic ? "right" : "left",
+                    }}
+                  >
+                    {t("Commentson")} : {selectedProductForComments.name}
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      px: 3,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                    }}
+                  >
+                    {Array.isArray(commentsMap[selectedProductForComments?.id]) &&
+                    commentsMap[selectedProductForComments.id].length > 0 ? (
+                      commentsMap[selectedProductForComments.id].map((c) => (
+                      <Card
+                        key={c.id}
+                        elevation={0}
+                        sx={{
+                           bgcolor: theme.palette.mode === "dark" ? "transparent" : "transparent",
+                          px: 2,
+                          py: 1,
+                          display: "flex",
+                          flexDirection: isArabic ? "row" : "row-reverse",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 2,
+                          direction: isArabic ? "rtl" : "ltr",
+                            boxShadow: "none",  
+                             borderBottom: theme.palette.mode === "dark" ? '2px solid #ffffff22' : '2px solid #2222',
+                        }}
+                      >
+                        {/* Avatar */}
                         <IconButton
-                          onClick={() =>
-                            navigate(`/profiledetails/${c.profiles?.id}`)
-                          }
+                          onClick={() => navigate(`/profiledetails/${c.profiles?.id}`)}
+                          sx={{ order: isArabic ? 1 : 3 }}
                         >
-                          <Avatar
-                            src={
-                              c.profiles?.avatar_url || "/default-avatar.png"
-                            }
-                          />
+                          <Avatar src={c.profiles?.avatar_url || "/default-avatar.png"} />
                         </IconButton>
-                        <Box flex={1}>
+
+                        {/* نص الكومنت */}
+                        <Box flex={1} sx={{ textAlign: isArabic ? "right" : "left", order: 2 }}>
                           <Typography
                             variant="body2"
                             fontWeight="bold"
                             sx={{
                               cursor: "pointer",
                               color: theme.palette.text.primary,
+                              textAlign: isArabic ? "right" : "left",
                             }}
-                            onClick={() =>
-                              navigate(`/profiledetails/${c.profiles?.id}`)
-                            }
+                            onClick={() => navigate(`/profiledetails/${c.profiles?.id}`)}
                           >
                             {c.profiles?.full_name || "—"}
                           </Typography>
@@ -737,6 +715,7 @@ export default function Cart() {
                             sx={{
                               color: theme.palette.text.secondary,
                               fontSize: 13,
+                              textAlign: isArabic ? "right" : "left",
                             }}
                           >
                             {c.content}
@@ -746,97 +725,93 @@ export default function Cart() {
                             sx={{
                               color: theme.palette.text.disabled,
                               fontSize: 11,
+                              textAlign: isArabic ? "right" : "left",
                             }}
                           >
                             {new Date(c.created_at).toLocaleString()}
                           </Typography>
                         </Box>
+
+                        {/* زر الحذف */}
                         {currentUserId === c.user_id && (
                           <IconButton
                             onClick={() =>
-                              handleDeleteComment(
-                                c.id,
-                                selectedProductForComments.id
-                              )
+                              handleDeleteComment(c.id, selectedProductForComments.id)
                             }
+                            sx={{ order: isArabic ? 3 : 1 }}
                           >
                             <DeleteIcon fontSize="small" color="error" />
                           </IconButton>
                         )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </Box>
-              ) : (
-                <Typography sx={{ color: theme.palette.text.secondary }}>
-                  {t("Therearenocommentsyet")}
-                </Typography>
-              )}
-            </DialogContent>
+                      </Card>
 
-            {/* Comment entry */}
-            <Box
-              sx={{
-                px: { xs: 1, md: 4 },
-                py: { xs: 1, md: 3 },
-                borderTop: `1px solid ${theme.palette.divider}`,
-              }}
-            >
-              <Box display="flex" gap={2}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={1}
-                  value={commentTextMap[selectedProductForComments.id] || ""}
-                  onChange={(e) =>
-                    setCommentTextMap((prev) => ({
-                      ...prev,
-                      [selectedProductForComments.id]: e.target.value,
-                    }))
-                  }
-                  placeholder={t("Writeyourcommenthere")}
-                  sx={{
-                    borderRadius: 3,
-                    "& .MuiInputBase-root": {
-                      borderRadius: 3,
-                      boxShadow:
-                        theme.palette.mode === "dark"
-                          ? "0 1px 4px rgba(255,255,255,0.1)"
-                          : "0 1px 4px rgba(0,0,0,0.1)",
-                      padding: 1,
-                      backgroundColor:
-                        theme.palette.mode === "dark" ? "#3a3a3a" : "#fff",
-                      color: theme.palette.text.primary,
-                    },
-                    "& .MuiInputBase-input": { fontSize: 14 },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: theme.palette.divider,
-                    },
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<SendIcon sx={{ ml: isArabic ? 1.5 : 0 }} />}
-                  sx={{
-                    height: "fit-content",
-                    alignSelf: "flex-start",
-                    borderRadius: 2,
-                  }}
-                  disabled={
-                    !commentTextMap[selectedProductForComments.id]?.trim()
-                  }
-                  onClick={() =>
-                    handleAddComment(selectedProductForComments.id)
-                  }
-                >
-                  {t("send")}
-                </Button>
+                      ))
+                    ) : (
+                      <Typography sx={{ color: theme.palette.text.secondary }}>
+                        {t("Therearenocommentsyet")}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          </>
-        )}
-      </Dialog>
+
+              {/* Comment Input */}
+              <Box
+                sx={{
+                  px: 3,
+                  py: 2,
+                  borderTop: `1px solid ${theme.palette.divider}`,
+                  bgcolor: theme.palette.mode === "dark" ? "#3a3a3a" : "#fafafa",
+                }}
+              >
+                <Box display="flex" gap={2} width="100%">
+                  <TextField
+                    fullWidth
+                    multiline
+                     rows={1}
+                    value={commentTextMap[selectedProductForComments.id] || ""}
+                    onChange={(e) =>
+                      setCommentTextMap((prev) => ({
+                        ...prev,
+                        [selectedProductForComments.id]: e.target.value,
+                      }))
+                    }
+                    placeholder={t("Writeyourcommenthere")}
+                    sx={{
+                      borderRadius: 3,
+                      "& .MuiInputBase-root": {
+                        borderRadius: 3,
+                        boxShadow:
+                          theme.palette.mode === "dark"
+                            ? "0 1px 4px rgba(255,255,255,0.1)"
+                            : "0 1px 4px rgba(0,0,0,0.1)",
+                        padding: 1,
+                        backgroundColor:
+                          theme.palette.mode === "dark" ? "#3a3a3a" : "#fff",
+                        color: theme.palette.text.primary,
+                      },
+                      "& .MuiInputBase-input": { fontSize: 14 },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: theme.palette.divider,
+                      },
+                    }}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<SendIcon sx={{ ml: isArabic ? 1.5 : 0} } />}
+                    sx={{ height: "fit-content", borderRadius: 3 }}
+                    disabled={!commentTextMap[selectedProductForComments.id]?.trim()}
+                    onClick={() => handleAddComment(selectedProductForComments.id)}
+                  >
+                    {t("send")}
+                  </Button>
+                </Box>
+              </Box>
+            </>
+          )}
+        </Dialog>
+
     </Box>
-  );
+  );  
 }
