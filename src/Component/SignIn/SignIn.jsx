@@ -1,96 +1,136 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import { NavLink, useNavigate } from "react-router-dom";
-// MUI
-import {Box,Button,TextField,Typography,CircularProgress,Alert,useTheme,Paper,IconButton,} from "@mui/material";
+import {Box,Button,TextField,Typography,CircularProgress,Alert,Paper,IconButton,useTheme,} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useTranslation } from "react-i18next";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
+import { useTranslation } from "react-i18next";
 
 export default function SignIn() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const isArabic = i18n.language === "ar";
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  // Field validation errors
+  const [errorField, setErrorField] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-// Automatically hide error messages after 4 seconds
-useEffect(() => {
-  /// Hide error messages after 4 seconds (optional)
-  if (errorMsg) {
-    const t = setTimeout(() => setErrorMsg(""), 4000);
-    return () => clearTimeout(t);
-  }
-}, [errorMsg]);
+  // Backend error alert
+  const [backendError, setBackendError] = useState("");
+  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
-// Automatically hide success messages after 3 seconds
-useEffect(() => {
-  if (successMsg) {
-    const t = setTimeout(() => setSuccessMsg(""), 3000);
-    return () => clearTimeout(t);
-  }
-}, [successMsg]);
+  // ===========================
+  // Bubble Error component
+  // ===========================
+  const BubbleError = ({ text, left, right, top }) => (
+    <Box
+      sx={{
+        position: { xs: "relative", sm: "absolute" },
+        top: { xs: "100%", sm: top || "50%" },
+        mt: { xs: 0.5, sm: 0 },
+        transform: {
+          xs: "none",
+          sm: top ? "translateY(0)" : "translateY(-50%)",
+        },
+        left: { xs: 0, sm: left || "auto" },
+        right: { xs: 0, sm: right || "auto" },
+        bgcolor: "#ff4d50e4",
+        color: "#fff",
+        fontSize: "0.85rem",
+        px: 2,
+        py: 0.7,
+        borderRadius: "4px",
+        whiteSpace: { xs: "normal", sm: "nowrap" },
+        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+        zIndex: 10,
+        animation: { xs: "fadeInMobile 0.25s ease", sm: "fadeIn 0.25s ease" },
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: 0,
+          height: 0,
+          borderStyle: "solid",
+          ...(i18n.dir() === "rtl"
+            ? {
+                right: "-5px",
+                borderWidth: "6px 0 6px 6px",
+                borderColor: "transparent transparent transparent #ff4d50e4",
+              }
+            : {
+                left: "-5px",
+                borderWidth: "6px 6px 6px 0",
+                borderColor: "transparent #ff4d50e4 transparent transparent",
+              }),
+          "@media (max-width:600px)": { display: "none" },
+        },
+        "@media (max-width:600px)": { width: "100%", mt: 1 },
+      }}
+    >
+      {text}
+    </Box>
+  );
 
-// Validate the sign-in form fields (email format and password presence)
-const validateForm = () => {
-  if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return t("Invalidemail");
-  if (!password) return t("Passwordrequired");
-  return null;
-};
+  // ===========================
+  // Field validation
+  // ===========================
+  const validateForm = () => {
+    if (!email.trim()) return { field: "email", message: t("Emailrequired") };
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
+      return { field: "email", message: t("Invalidemail") };
+    if (!password.trim())
+      return { field: "password", message: t("Passwordrequired") };
+    return null;
+  };
 
-// Handle user sign-in: validate form, authenticate, fetch profile, and redirect
-const handleSignIn = async () => {
-  const validationError = validateForm();
-  if (validationError) {
-    setErrorMsg(validationError);
-    return;
-  }
+  // ===========================
+  // Handle Sign In
+  // ===========================
+  const handleSignIn = async () => {
+    const validationError = validateForm();
+    if (validationError) {
+      setErrorField(validationError.field);
+      setErrorMsg(validationError.message);
+      return;
+    }
 
-  setLoading(true);
-  setErrorMsg("");
-  setSuccessMsg("");
+    setLoading(true);
+    setErrorField("");
+    setErrorMsg("");
+    setBackendError("");
 
-  try {
-    // Attempt to sign in with email and password
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
 
-    // Retrieve the authenticated user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error("تعذر الحصول على بيانات المستخدم");
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error(t("Emailorpasswordincorrect"));
 
-    // Fetch user's profile data
-    const { data: profileData, error: profileError } = await supabase
-      .from("profiles")
-      .select("full_name, avatar_url, phone")
-      .eq("id", user.id)
-      .single();
+      setTimeout(() => navigate("/"), 500);
+    } catch (err) {
+      setBackendError(err.message || t("Emailorpasswordincorrect"));
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    if (profileError) throw profileError;
+  // Reset field error when user types
+  useEffect(() => {
+    if (errorField === "email" && email) setErrorField("");
+    if (errorField === "password" && password) setErrorField("");
+  }, [email, password]);
 
-    // Store profile data in localStorage
-    localStorage.setItem("profile", JSON.stringify(profileData));
-
-    // Show success message and redirect to homepage
-    setSuccessMsg(t("Youhavebeenloggedinsuccessfully"));
-    setTimeout(() => navigate("/"), 1200);
-  } catch (err) {
-    // Handle any errors during sign-in
-    setErrorMsg(err.message || "فشل تسجيل الدخول");
-  } finally {
-    setLoading(false);
-  }
-};
   return (
     <Box
       component="section"
@@ -103,17 +143,16 @@ const handleSignIn = async () => {
         overflow: "hidden",
         background:
           theme.palette.mode === "dark"
-            ? "rgba(40, 40, 40, 0.85)"
-            : "rgba(255, 255, 255, 0.85)",
+            ? "rgba(40,40,40,0.85)"
+            : "rgba(255,255,255,0.85)",
       }}
     >
       <Paper
         elevation={6}
         sx={{
-          position: "relative", 
-          width: "min(420px, 92vw)", 
-          maxHeight: "calc(100vh - 40px)", 
-          boxSizing: "border-box",
+          position: "relative",
+          width: "min(520px, 92vw)",
+          maxHeight: "calc(100vh - 40px)",
           display: "flex",
           flexDirection: "column",
           gap: 2,
@@ -124,187 +163,129 @@ const handleSignIn = async () => {
           boxShadow: "0 10px 30px rgba(2,6,23,0.2)",
         }}
       >
-        {/* Floating alerts (do not increase height) */}
-        {errorMsg && (
+        {/* Backend error alert */}
+        {backendError && (
           <Alert
             severity="error"
-            sx={{
-              position: "absolute",
-              top: -12,
-              left: 12,
-              right: 13,
-              zIndex: 20,
-              borderRadius: 2,
-              display: "flex",
-              flexDirection: isArabic ? "row-reverse" : "row",
-              alignItems: "center",
-            }}
+            sx={{ mb: 2, display: "flex", justifyContent: "space-between" }}
             action={
-              <IconButton size="small" onClick={() => setErrorMsg("")}>
+              <IconButton size="small" onClick={() => setBackendError("")}>
                 <CloseIcon fontSize="small" />
               </IconButton>
             }
           >
-            {errorMsg}
+            {backendError}
           </Alert>
         )}
 
-        {successMsg && (
-          <Alert
-            severity="success"
-            sx={{
-              position: "absolute",
-              top: -12,
-              left: 12,
-              right: 13,
-              zIndex: 20,
-              borderRadius: 2,
-              display: "flex",
-              flexDirection: "row-reverse",
-              alignItems: "center",
+        <Typography
+          variant="h5"
+          align="center"
+          fontWeight={700}
+          sx={{ color: theme.palette.primary.main }}
+        >
+          {t("Login")}
+        </Typography>
+
+        {/* Email */}
+        <Box sx={{ position: "relative" }}>
+          <TextField
+            label={t("email")}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            InputProps={{
+              startAdornment: <EmailIcon sx={{ color: "gray", mr: 1 }} />,
             }}
-            action={
-              <IconButton size="small" onClick={() => setSuccessMsg("")}>
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            }
-          >
-            {successMsg}
-          </Alert>
-        )}
+            sx={{
+              "& .MuiOutlinedInput-root fieldset": {
+                borderColor: errorField === "email" ? "#ff4d4f" : undefined,
+              },
+            }}
+          />
+          {errorField === "email" && (
+            <BubbleError
+              text={errorMsg}
+              left={i18n.dir() === "rtl" ? "-170px" : undefined}
+              right={i18n.dir() === "ltr" ? "-130px" : undefined}
+            />
+          )}
+        </Box>
 
-       {/* Form content - add margin-top if there is an alert visible so that the title is not hidden */}
+        {/* Password */}
+        <Box sx={{ position: "relative" }}>
+          <TextField
+            label={t("password")}
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            InputProps={{
+              startAdornment: <LockIcon sx={{ color: "gray", mr: 1 }} />,
+              endAdornment: (
+                <IconButton onClick={handleClickShowPassword} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              ),
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root fieldset": {
+                borderColor: errorField === "password" ? "#ff4d4f" : undefined,
+              },
+            }}
+          />
+          {errorField === "password" && (
+            <BubbleError
+              text={errorMsg}
+              left={i18n.dir() === "rtl" ? "-138px" : undefined}
+              right={i18n.dir() === "ltr" ? "-160px" : undefined}
+            />
+          )}
+        </Box>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSignIn}
+          fullWidth
+          disabled={loading}
+          sx={{ mt: 2, py: 1.2, borderRadius: 2, fontWeight: 600 }}
+        >
+          {loading ? (
+            <CircularProgress size={22} sx={{ color: "#fff" }} />
+          ) : (
+            t("Login")
+          )}
+        </Button>
+
         <Box
           sx={{
             display: "flex",
+            justifyContent: "center",
             flexDirection: "column",
-            gap: 1.5,
-            mt: errorMsg || successMsg ? 4 : 0,
+            alignItems: "center",
+            gap: 1,
+            mt: 1,
+            flexWrap: "wrap",
           }}
         >
-          <Typography
-            variant="h5"
-            align="center"
-            fontWeight={700}
-            sx={{ color: theme.palette.primary.main }}
+          <NavLink
+            style={{ color: "#42a5f7ff" }}
+            onClick={() => navigate("/newauth")}
           >
-            {t("Login")}
-          </Typography>
-<TextField
-  label={t("email")}
-  type="email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  fullWidth
-  size="medium"
-  margin="dense"
-  variant="outlined"
-  InputProps={{
-    startAdornment: <EmailIcon sx={{ color: "gray", mr: 1 }} />,
-  }}
-  error={!!errorMsg && errorMsg.includes("email")}
-  helperText={!!errorMsg && errorMsg.includes("email") ? errorMsg : ""}
-  sx={{
-    "& .MuiOutlinedInput-root": {
-      borderRadius: 3,
-      bgcolor: theme.palette.mode === "dark" ? "#111316" : "#fff",
-      "&.Mui-focused": {
-        borderColor: theme.palette.primary.main,
-        boxShadow: `0 0 0 2px ${theme.palette.primary.light}33`,
-      },
-    },
-  }}
-/>
-
-<TextField
-  label={t("password")}
-  type="password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  fullWidth
-  size="medium"
-  margin="dense"
-  variant="outlined"
-  InputProps={{
-    startAdornment: <LockIcon sx={{ color: "gray", mr: 1 }} />,
-  }}
-  error={!!errorMsg && errorMsg.includes("Password")}
-  helperText={!!errorMsg && errorMsg.includes("Password") ? errorMsg : ""}
-  sx={{
-    "& .MuiOutlinedInput-root": {
-      borderRadius: 3,
-      bgcolor: theme.palette.mode === "dark" ? "#111316" : "#fff",
-      "&.Mui-focused": {
-        borderColor: theme.palette.primary.main,
-        boxShadow: `0 0 0 2px ${theme.palette.primary.light}33`,
-      },
-    },
-  }}
-/>
-
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSignIn}
-            fullWidth
-            disabled={loading}
-            sx={{
-              mt: 1,
-              py: 1.1,
-              borderRadius: 2,
-              fontWeight: 700,
-              textTransform: "none",
-            }}
+            {t("Donthaveanaccount")}
+          </NavLink>
+          <NavLink
+            style={{ color: "#42a5f7ff" }}
+            onClick={() => navigate("/newpassword")}
           >
-            {loading ? (
-              <CircularProgress
-                size={20}
-                thickness={5}
-                sx={{ color: "#fff" }}
-              />
-            ) : (
-              t("Login")
-            )}
-          </Button>
-         
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 1,
-              mt: 1,
-              flexWrap: "wrap",
-            }}
-          >
-            <NavLink
-              style={{ color: "#42a5f7ff" }}
-              component="button"
-              onClick={() => navigate("/newauth")}
-              sx={{
-                fontSize: "0.95rem",
-                fontWeight: 600,
-                textTransform: "none",
-                "&:hover": { textDecoration: "underline" },
-              }}
-            >
-              {t("Donthaveanaccount")}
-            </NavLink>
-
-            <NavLink
-              style={{ color: "#42a5f7ff" }}
-              component="button"
-              onClick={() => navigate("/newpassword")}
-              sx={{
-                fontSize: "0.9rem",
-                textTransform: "none",
-                "&:hover": { textDecoration: "underline" },
-              }}
-            >
-              {t("Forgotyourpassword")}
-            </NavLink>
-          </Box>
+            {t("Forgotyourpassword")}
+          </NavLink>
         </Box>
       </Paper>
     </Box>

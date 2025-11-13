@@ -129,7 +129,7 @@ export default function Navbar({ toggleTheme, isDarkMode }) {
         sx={{
           bgcolor:
             theme.palette.mode === "dark"
-              ? "rgba(30, 30, 30, 0.8)"
+              ? "rgba(0, 0, 0, 0.87)"
               : "primary.main",
           backdropFilter: "blur(20px) saturate(180%)",
           WebkitBackdropFilter: "blur(20px) saturate(180%)",
