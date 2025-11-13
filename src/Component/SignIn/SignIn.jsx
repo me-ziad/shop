@@ -23,6 +23,7 @@ export default function SignIn() {
   // Backend error alert
   const [backendError, setBackendError] = useState("");
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+  const isArabic = i18n.language === "ar";
 
   // ===========================
   // Bubble Error component
@@ -167,9 +168,9 @@ export default function SignIn() {
         {backendError && (
           <Alert
             severity="error"
-            sx={{ mb: 2, display: "flex", justifyContent: "space-between" }}
+            sx={{ mb: 2, display: "flex", justifyContent: "space-between",position:'relative'}}
             action={
-              <IconButton size="small" onClick={() => setBackendError("")}>
+              <IconButton sx={{position:'absolute',  [isArabic ? "left" : "right"]: 12 }} size="small" onClick={() => setBackendError("")}>
                 <CloseIcon fontSize="small" />
               </IconButton>
             }
