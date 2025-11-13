@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import {Box,Typography,Card,CardContent,Avatar,CircularProgress,IconButton,TextField,Snackbar,Alert,Divider,Dialog,DialogTitle,DialogContent,Button,Tooltip,useTheme, useMediaQuery,} from "@mui/material";
+import {Box,Typography,Card,CardContent,Avatar,IconButton,TextField,Divider,Dialog,Button,Tooltip,useTheme,useMediaQuery,} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -25,9 +25,10 @@ export default function Cart() {
   const [commentsMap, setCommentsMap] = useState({});
   const [commentTextMap, setCommentTextMap] = useState({});
   const [currentUserId, setCurrentUserId] = useState(null);
-  const [selectedProductForComments, setSelectedProductForComments] =useState(null);
+  const [selectedProductForComments, setSelectedProductForComments] =
+    useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Set the page title to "Cart" when the component mounts
   useEffect(() => {
@@ -164,7 +165,7 @@ const isXs = useMediaQuery(theme.breakpoints.down('sm'));
   if (loading)
     return (
       <Box textAlign="center" mt={5}>
-        <Loading/>
+        <Loading />
       </Box>
     );
 
@@ -507,182 +508,193 @@ const isXs = useMediaQuery(theme.breakpoints.down('sm'));
       )}
 
       {/* modal */}
-     <Dialog
-  open={!!selectedProductForComments}
-  onClose={closeCommentsModal}
-  fullScreen={isXs}
-  maxWidth={false}
-  fullWidth={false}
+      <Dialog
+        open={!!selectedProductForComments}
+        onClose={closeCommentsModal}
+        fullScreen={isXs}
+        maxWidth={false}
+        fullWidth={false}
+        PaperProps={{
+          sx: {
+            m: 0,
+            margin: "auto",
+            p: 0,
+            borderRadius: 2,
+            width: { xs: "100%", md: "90%" },
+            boxShadow:
+              theme.palette.mode === "dark"
+                ? "0 20px 40px rgba(0,0,0,0.6)"
+                : 10,
+            bgcolor: theme.palette.background.paper,
+            height: { xs: "93vh", md: "90vh" },
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+          },
+        }}
+      >
+        {selectedProductForComments && (
+          <>
+            {/* Close Button */}
+            <IconButton
+              onClick={closeCommentsModal}
+              sx={{
+                position: "absolute",
+                top: 12,
+                ...(isArabic ? { left: 30 } : { right: 20 }),
+                bgcolor:
+                  theme.palette.mode === "dark"
+                    ? "#444"
+                    : "rgba(255,255,255,0.8)",
+                color: theme.palette.text.primary,
+                zIndex: 10,
+                boxShadow: 1,
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
 
-  PaperProps={{
-    sx: {
-      m: 0,
-      margin:'auto',
-      p: 0,
-      borderRadius: 2,
-      width: { xs: '100%', md: '90%' },
-      boxShadow:
-        theme.palette.mode === 'dark'
-          ? '0 20px 40px rgba(0,0,0,0.6)'
-          : 10,
-      bgcolor: theme.palette.background.paper,
-      height: { xs: '95vh', md: '90vh' },
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-    },
-  }}
->
-          {selectedProductForComments && (
-            <>
-              {/* Close Button */}
-              <IconButton
-                onClick={closeCommentsModal}
-                sx={{
-                  position: "absolute",
-                  top: 12,
-                  ...(isArabic ? { left: 30 } : { right: 20 }),
-                  bgcolor:
-                    theme.palette.mode === "dark"
-                      ? "#444"
-                      : "rgba(255,255,255,0.8)",
-                  color: theme.palette.text.primary,
-                  zIndex: 10,
-                  boxShadow: 1,
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-
-              {/* Main Content */}
+            {/* Main Content */}
+            <Box
+              sx={{
+                display: "flex",
+                flex: 1,
+                flexDirection: {
+                  xs: "column",
+                  md: isArabic ? "row" : "row-reverse",
+                },
+                overflow: "hidden",
+              }}
+            >
+              {/* Product Image */}
               <Box
                 sx={{
+                  flex: { xs: "unset", md: 1 },
+                  order: isArabic ? 1 : 1,
+                  p: 2,
                   display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "relative",
+                  cursor: "pointer",
+                  "&:hover .overlay": { opacity: 1 },
+                  maxHeight: { xs: "30%", md: "100%" },
+                }}
+                onClick={() =>
+                  setSelectedImage(selectedProductForComments.image_url)
+                }
+              >
+                <Box
+                  component="img"
+                  src={selectedProductForComments.image_url}
+                  alt={selectedProductForComments.name}
+                  sx={{
+                    width: { xs: "100%", md: "100%" },
+                    height: { xs: 200, md: "100%" },
+                    objectFit: "cover",
+                    borderRadius: 2,
+                    boxShadow:
+                      theme.palette.mode === "dark"
+                        ? "0 4px 12px rgba(255,255,255,0.1)"
+                        : "0 4px 12px rgba(0,0,0,0.1)",
+                  }}
+                />
+                <Box
+                  className="overlay"
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    bgcolor: "rgba(0,0,0,0.3)",
+                    color: "#fff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 14,
+                    fontWeight: "bold",
+                    opacity: 0,
+                    transition: "opacity 0.3s ease",
+                    zIndex: 2,
+                  }}
+                >
+                  {t("Clicktoviewtheimage")}{" "}
+                  <CenterFocusStrongIcon sx={{ mx: 1 }} />
+                </Box>
+              </Box>
+
+              {/* Comments Section */}
+              <Box
+                sx={{
+                  order: isArabic ? 2 : 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  borderLeft: isArabic
+                    ? "none"
+                    : `1px solid ${theme.palette.divider}`,
+                  borderRight: isArabic
+                    ? `1px solid ${theme.palette.divider}`
+                    : "none",
+                  bgcolor:
+                    theme.palette.mode === "dark" ? "#2a2a2a" : "#fafafa",
+                  overflowY: "auto",
+                  maxHeight: "100vh",
                   flex: 1,
-          flexDirection: {
-              xs: "column",
-              md: isArabic ? "row" : "row-reverse",
-            },
-                  overflow: "hidden",
+                  /* ==== Scrollbar Styles ==== */
+                  "&::-webkit-scrollbar": {
+                    width: "8px",
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    background:
+                      theme.palette.mode === "dark" ? "#1f1f1f" : "#f0f0f0",
+                    borderRadius: "4px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor:
+                      theme.palette.mode === "dark" ? "#555" : "#aaa",
+                    borderRadius: "4px",
+                    border: "2px solid transparent",
+                    backgroundClip: "content-box",
+                  },
+                  "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor:
+                      theme.palette.mode === "dark" ? "#777" : "#888",
+                  },
                 }}
               >
-                {/* Product Image */}
+                <Typography
+                  variant="h6"
+                  fontWeight="bold"
+                  sx={{
+                    px: 3,
+                    py: 2,
+                    textAlign: isArabic ? "right" : "left",
+                  }}
+                >
+                  {t("Commentson")} : {selectedProductForComments.name}
+                </Typography>
+
                 <Box
                   sx={{
-                    flex: { xs: "unset", md: 1 },
-                    order: isArabic ? 1 : 1,
-                    p: 2,
+                    px: 3,
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    position: "relative",
-                    cursor: "pointer",
-                    "&:hover .overlay": { opacity: 1 },
-                    maxHeight: { xs: "30%", md: "100%" },
+                    flexDirection: "column",
+                    gap: 2,
                   }}
-                  onClick={() =>
-                    setSelectedImage(selectedProductForComments.image_url)
-                  }
                 >
-                  <Box
-                    component="img"
-                    src={selectedProductForComments.image_url}
-                    alt={selectedProductForComments.name}
-                    sx={{
-                      width: { xs: "100%", md: "100%" },
-                      height: { xs: 200, md: "100%" },
-                      objectFit: "cover",
-                      borderRadius: 2,
-                      boxShadow:
-                        theme.palette.mode === "dark"
-                          ? "0 4px 12px rgba(255,255,255,0.1)"
-                          : "0 4px 12px rgba(0,0,0,0.1)",
-                    }}
-                  />
-                  <Box
-                    className="overlay"
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      bgcolor: "rgba(0,0,0,0.3)",
-                      color: "#fff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 14,
-                      fontWeight: "bold",
-                      opacity: 0,
-                      transition: "opacity 0.3s ease",
-                      zIndex: 2,
-                    }}
-                  >
-                    {t("Clicktoviewtheimage")} <CenterFocusStrongIcon sx={{ mx: 1 }} />
-                  </Box>
-                </Box>
-
-                {/* Comments Section */}
-                 <Box
-                      sx={{
-                        order: isArabic ? 2 : 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        borderLeft: isArabic ? "none" : `1px solid ${theme.palette.divider}`,
-                        borderRight: isArabic ? `1px solid ${theme.palette.divider}` : "none",
-                        bgcolor: theme.palette.mode === "dark" ? "#2a2a2a" : "#fafafa",
-                        overflowY: "auto",
-                        maxHeight: '100vh',
-                        flex: 1,
-                        /* ==== Scrollbar Styles ==== */
-                        "&::-webkit-scrollbar": {
-                          width: "8px",
-                        },
-                        "&::-webkit-scrollbar-track": {
-                          background: theme.palette.mode === "dark" ? "#1f1f1f" : "#f0f0f0",
-                          borderRadius: "4px",
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                          backgroundColor: theme.palette.mode === "dark" ? "#555" : "#aaa",
-                          borderRadius: "4px",
-                          border: "2px solid transparent",
-                          backgroundClip: "content-box",
-                        },
-                        "&::-webkit-scrollbar-thumb:hover": {
-                          backgroundColor: theme.palette.mode === "dark" ? "#777" : "#888",
-                        },
-                      }}
-                    >
-                  <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    sx={{
-                      px: 3,
-                      py: 2,
-                      textAlign: isArabic ? "right" : "left",
-                    }}
-                  >
-                    {t("Commentson")} : {selectedProductForComments.name}
-                  </Typography>
-
-                  <Box
-                    sx={{
-                      px: 3,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 2,
-                    }}
-                  >
-                    {Array.isArray(commentsMap[selectedProductForComments?.id]) &&
-                    commentsMap[selectedProductForComments.id].length > 0 ? (
-                      commentsMap[selectedProductForComments.id].map((c) => (
+                  {Array.isArray(commentsMap[selectedProductForComments?.id]) &&
+                  commentsMap[selectedProductForComments.id].length > 0 ? (
+                    commentsMap[selectedProductForComments.id].map((c) => (
                       <Card
                         key={c.id}
                         elevation={0}
                         sx={{
-                           bgcolor: theme.palette.mode === "dark" ? "transparent" : "transparent",
-                          px: 2,
+                          bgcolor:
+                            theme.palette.mode === "dark"
+                              ? "transparent"
+                              : "transparent",
+                          px: { sx: 0, md: 2 },
                           py: 1,
                           display: "flex",
                           flexDirection: isArabic ? "row" : "row-reverse",
@@ -690,20 +702,35 @@ const isXs = useMediaQuery(theme.breakpoints.down('sm'));
                           justifyContent: "space-between",
                           gap: 2,
                           direction: isArabic ? "rtl" : "ltr",
-                            boxShadow: "none",  
-                             borderBottom: theme.palette.mode === "dark" ? '2px solid #ffffff22' : '2px solid #2222',
+                          boxShadow: "none",
+                          borderBottom:
+                            theme.palette.mode === "dark"
+                              ? "2px solid #ffffff22"
+                              : "2px solid #2222",
                         }}
                       >
                         {/* Avatar */}
                         <IconButton
-                          onClick={() => navigate(`/profiledetails/${c.profiles?.id}`)}
+                          onClick={() =>
+                            navigate(`/profiledetails/${c.profiles?.id}`)
+                          }
                           sx={{ order: isArabic ? 1 : 3 }}
                         >
-                          <Avatar src={c.profiles?.avatar_url || "/default-avatar.png"} />
+                          <Avatar
+                            src={
+                              c.profiles?.avatar_url || "/default-avatar.png"
+                            }
+                          />
                         </IconButton>
 
                         {/* نص الكومنت */}
-                        <Box flex={1} sx={{ textAlign: isArabic ? "right" : "left", order: 2 }}>
+                        <Box
+                          flex={1}
+                          sx={{
+                            textAlign: isArabic ? "right" : "left",
+                            order: 2,
+                          }}
+                        >
                           <Typography
                             variant="body2"
                             fontWeight="bold"
@@ -712,7 +739,9 @@ const isXs = useMediaQuery(theme.breakpoints.down('sm'));
                               color: theme.palette.text.primary,
                               textAlign: isArabic ? "right" : "left",
                             }}
-                            onClick={() => navigate(`/profiledetails/${c.profiles?.id}`)}
+                            onClick={() =>
+                              navigate(`/profiledetails/${c.profiles?.id}`)
+                            }
                           >
                             {c.profiles?.full_name || "—"}
                           </Typography>
@@ -742,7 +771,10 @@ const isXs = useMediaQuery(theme.breakpoints.down('sm'));
                         {currentUserId === c.user_id && (
                           <IconButton
                             onClick={() =>
-                              handleDeleteComment(c.id, selectedProductForComments.id)
+                              handleDeleteComment(
+                                c.id,
+                                selectedProductForComments.id
+                              )
                             }
                             sx={{ order: isArabic ? 3 : 1 }}
                           >
@@ -750,74 +782,76 @@ const isXs = useMediaQuery(theme.breakpoints.down('sm'));
                           </IconButton>
                         )}
                       </Card>
-
-                      ))
-                    ) : (
-                      <Typography sx={{ color: theme.palette.text.secondary }}>
-                        {t("Therearenocommentsyet")}
-                      </Typography>
-                    )}
-                  </Box>
+                    ))
+                  ) : (
+                    <Typography sx={{ color: theme.palette.text.secondary }}>
+                      {t("Therearenocommentsyet")}
+                    </Typography>
+                  )}
                 </Box>
               </Box>
+            </Box>
 
-              {/* Comment Input */}
-              <Box
-                sx={{
-                  px: 3,
-                  py: 2,
-                  borderTop: `1px solid ${theme.palette.divider}`,
-                  bgcolor: theme.palette.mode === "dark" ? "#3a3a3a" : "#fafafa",
-                }}
-              >
-                <Box display="flex" gap={2} width="100%">
-                  <TextField
-                    fullWidth
-                    multiline
-                     rows={1}
-                    value={commentTextMap[selectedProductForComments.id] || ""}
-                    onChange={(e) =>
-                      setCommentTextMap((prev) => ({
-                        ...prev,
-                        [selectedProductForComments.id]: e.target.value,
-                      }))
-                    }
-                    placeholder={t("Writeyourcommenthere")}
-                    sx={{
+            {/* Comment Input */}
+            <Box
+              sx={{
+                px: 3,
+                py: 2,
+                borderTop: `1px solid ${theme.palette.divider}`,
+                bgcolor: theme.palette.mode === "dark" ? "#3a3a3a" : "#fafafa",
+              }}
+            >
+              <Box display="flex" gap={2} width="100%">
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={1}
+                  value={commentTextMap[selectedProductForComments.id] || ""}
+                  onChange={(e) =>
+                    setCommentTextMap((prev) => ({
+                      ...prev,
+                      [selectedProductForComments.id]: e.target.value,
+                    }))
+                  }
+                  placeholder={t("Writeyourcommenthere")}
+                  sx={{
+                    borderRadius: 3,
+                    "& .MuiInputBase-root": {
                       borderRadius: 3,
-                      "& .MuiInputBase-root": {
-                        borderRadius: 3,
-                        boxShadow:
-                          theme.palette.mode === "dark"
-                            ? "0 1px 4px rgba(255,255,255,0.1)"
-                            : "0 1px 4px rgba(0,0,0,0.1)",
-                        padding: 1,
-                        backgroundColor:
-                          theme.palette.mode === "dark" ? "#3a3a3a" : "#fff",
-                        color: theme.palette.text.primary,
-                      },
-                      "& .MuiInputBase-input": { fontSize: 14 },
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: theme.palette.divider,
-                      },
-                    }}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<SendIcon sx={{ ml: isArabic ? 1.5 : 0} } />}
-                    sx={{ height: "fit-content", borderRadius: 3 }}
-                    disabled={!commentTextMap[selectedProductForComments.id]?.trim()}
-                    onClick={() => handleAddComment(selectedProductForComments.id)}
-                  >
-                    {t("send")}
-                  </Button>
-                </Box>
+                      boxShadow:
+                        theme.palette.mode === "dark"
+                          ? "0 1px 4px rgba(255,255,255,0.1)"
+                          : "0 1px 4px rgba(0,0,0,0.1)",
+                      padding: 1,
+                      backgroundColor:
+                        theme.palette.mode === "dark" ? "#3a3a3a" : "#fff",
+                      color: theme.palette.text.primary,
+                    },
+                    "& .MuiInputBase-input": { fontSize: 14 },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: theme.palette.divider,
+                    },
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<SendIcon sx={{ ml: isArabic ? 1.5 : 0 }} />}
+                  sx={{ height: "fit-content", borderRadius: 3 }}
+                  disabled={
+                    !commentTextMap[selectedProductForComments.id]?.trim()
+                  }
+                  onClick={() =>
+                    handleAddComment(selectedProductForComments.id)
+                  }
+                >
+                  {t("send")}
+                </Button>
               </Box>
-            </>
-          )}
-        </Dialog>
-
+            </Box>
+          </>
+        )}
+      </Dialog>
     </Box>
-  );  
+  );
 }

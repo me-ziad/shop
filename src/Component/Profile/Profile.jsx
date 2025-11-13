@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import {Box,Typography,Avatar,Button,Tabs,Tab,CircularProgress,Dialog,DialogTitle,DialogContent,DialogActions,TextField,IconButton,Tooltip,useTheme,DialogContentText,Card,CardContent,} from "@mui/material";
+import {Box,Typography,Avatar,Button,Tabs,Tab,CircularProgress,Dialog,DialogTitle,DialogContent,DialogActions,TextField,IconButton,Tooltip,useTheme,DialogContentText,Card,CardContent,useMediaQuery,} from "@mui/material";
 import {Edit,Add,EditOutlined,DeleteOutline,ChatBubbleOutline,Send,} from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
@@ -26,17 +26,8 @@ export default function Profile() {
   const [newImagePreview, setNewImagePreview] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [commentsModalProduct, setCommentsModalProduct] = useState(null);
-  const [editData, setEditData] = useState({
-    full_name: "",
-    phone: "",
-    address: "",
-    avatar_url: "",
-  });
-  const [editValues, setEditValues] = useState({
-    name: "",
-    description: "",
-    price: "",
-  });
+  const [editData, setEditData] = useState({full_name: "",phone: "",address: "",avatar_url: "",});
+  const [editValues, setEditValues] = useState({name: "",description: "",price: "",});
   const theme = useTheme();
   const { t } = useTranslation();
   const { i18n } = useTranslation();
@@ -44,6 +35,7 @@ export default function Profile() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Set the page title to "Profile" when the component mounts
   useEffect(() => {
@@ -429,7 +421,16 @@ export default function Profile() {
               </Typography>
             </Box>
           ) : (
-            <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={3}>
+            <Box
+              display="grid"
+              gridTemplateColumns={{
+                xs: "repeat(1, 1fr)",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(3, 1fr)",
+                lg: "repeat(4, 1fr)",
+              }}
+              gap={3}
+            >
               {products.map((product) => (
                 <Box
                   key={product.id}
@@ -719,13 +720,14 @@ export default function Profile() {
       <Dialog
         open={!!commentsModalProduct}
         onClose={() => setCommentsModalProduct(null)}
-        fullWidth={false}
+        fullScreen={isXs}
         maxWidth={false}
+        fullWidth={false}
         PaperProps={{
           sx: {
             borderRadius: 2,
             width: { xs: "100%", md: "90%" },
-            height: { xs: "95vh", md: "90vh" },
+            height: { xs: "93vh", md: "90vh" },
             display: "flex",
             flexDirection: "column",
             position: "relative",
@@ -826,40 +828,44 @@ export default function Profile() {
               </Box>
 
               {/* Comments Section */}
-                            <Box
-                    sx={{
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      borderLeft: isArabic
-                        ? "none"
-                        : `1px solid ${theme.palette.divider}`,
-                      borderRight: isArabic
-                        ? `1px solid ${theme.palette.divider}`
-                        : "none",
-                      bgcolor: theme.palette.mode === "dark" ? "#2a2a2a" : "#fafafa",
-                      overflowY: "auto",
-                      maxHeight: "100vh",
+              <Box
+                sx={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  borderLeft: isArabic
+                    ? "none"
+                    : `1px solid ${theme.palette.divider}`,
+                  borderRight: isArabic
+                    ? `1px solid ${theme.palette.divider}`
+                    : "none",
+                  bgcolor:
+                    theme.palette.mode === "dark" ? "#2a2a2a" : "#fafafa",
+                  overflowY: "auto",
+                  maxHeight: "100vh",
 
-                      /* ==== Scrollbar Styles ==== */
-                      "&::-webkit-scrollbar": {
-                        width: "8px", 
-                      },
-                      "&::-webkit-scrollbar-track": {
-                        background: theme.palette.mode === "dark" ? "#1f1f1f" : "#f0f0f0",
-                        borderRadius: "4px",
-                      },
-                      "&::-webkit-scrollbar-thumb": {
-                        backgroundColor: theme.palette.mode === "dark" ? "#555" : "#aaa",
-                        borderRadius: "4px",
-                        border: "2px solid transparent",
-                        backgroundClip: "content-box",
-                      },
-                      "&::-webkit-scrollbar-thumb:hover": {
-                        backgroundColor: theme.palette.mode === "dark" ? "#777" : "#888",
-                      },
-                    }}
-                  >
+                  /* ==== Scrollbar Styles ==== */
+                  "&::-webkit-scrollbar": {
+                    width: "8px",
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    background:
+                      theme.palette.mode === "dark" ? "#1f1f1f" : "#f0f0f0",
+                    borderRadius: "4px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor:
+                      theme.palette.mode === "dark" ? "#555" : "#aaa",
+                    borderRadius: "4px",
+                    border: "2px solid transparent",
+                    backgroundClip: "content-box",
+                  },
+                  "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor:
+                      theme.palette.mode === "dark" ? "#777" : "#888",
+                  },
+                }}
+              >
                 <Typography
                   variant="h6"
                   fontWeight="bold"
@@ -870,7 +876,7 @@ export default function Profile() {
 
                 <Box
                   sx={{
-                    px: 3,
+                    px: {xs:0,md:3},
                     display: "flex",
                     flexDirection: "column",
                     gap: 2,
@@ -891,8 +897,10 @@ export default function Profile() {
                           key={c.id}
                           elevation={0}
                           sx={{
-                             bgcolor:
-                              theme.palette.mode === "dark"?  'transparent': 'transparent',
+                            bgcolor:
+                              theme.palette.mode === "dark"
+                                ? "transparent"
+                                : "transparent",
                             px: 2,
                             py: 1,
                             display: "flex",
@@ -900,7 +908,10 @@ export default function Profile() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             gap: 2,
-                            borderBottom: theme.palette.mode === "dark" ? '2px solid #ffffff22' : '2px solid #2222',
+                            borderBottom:
+                              theme.palette.mode === "dark"
+                                ? "2px solid #ffffff22"
+                                : "2px solid #2222",
                           }}
                         >
                           <IconButton sx={{ order: isArabic ? 1 : 3 }}>
