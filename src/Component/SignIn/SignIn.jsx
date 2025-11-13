@@ -141,10 +141,10 @@ export default function SignIn() {
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
-        background:
+       background:
           theme.palette.mode === "dark"
-            ? "rgba(40,40,40,0.85)"
-            : "rgba(255,255,255,0.85)",
+            ? "linear-gradient(135deg, #1e1e1e 0%, #1e1e1e 100%)"
+            : "linear-gradient(135deg, #eaf4ff 0%, #ffffff 100%)",
       }}
     >
       <Paper

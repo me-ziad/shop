@@ -256,10 +256,6 @@ export default function NewAccount() {
           p: { xs: 3, sm: 4 },
           borderRadius: 3,
           backdropFilter: "blur(10px)",
-          background:
-            theme.palette.mode === "dark"
-              ? "#1e1e1e"
-              : "rgba(255, 255, 255, 0.95)",
           boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
         }}
       >
