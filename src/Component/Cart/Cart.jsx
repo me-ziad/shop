@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import {Box,Typography,Card,CardContent,Avatar,CircularProgress,IconButton,TextField,Snackbar,Alert,Divider,Dialog,DialogTitle,DialogContent,Button,Tooltip,useTheme,} from "@mui/material";
+import {Box,Typography,Card,CardContent,Avatar,CircularProgress,IconButton,TextField,Snackbar,Alert,Divider,Dialog,DialogTitle,DialogContent,Button,Tooltip,useTheme, useMediaQuery,} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -27,6 +27,7 @@ export default function Cart() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [selectedProductForComments, setSelectedProductForComments] =useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+const isXs = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Set the page title to "Cart" when the component mounts
   useEffect(() => {
@@ -506,27 +507,32 @@ export default function Cart() {
       )}
 
       {/* modal */}
-        <Dialog
-          open={!!selectedProductForComments}
-          onClose={closeCommentsModal}
-        maxWidth={false}
-        fullWidth={false}
-          PaperProps={{
-            sx: {
-              borderRadius: 2,
-              width: {xs:'100%',md:'90%'},
-              boxShadow:
-                theme.palette.mode === "dark"
-                  ? "0 20px 40px rgba(0,0,0,0.6)"
-                  : 10,
-              bgcolor: theme.palette.background.paper,
-              height: { xs: "95vh", md: "90vh" },
-              display: "flex",
-              flexDirection: "column",
-              position: "relative",
-            },
-          }}
-        >
+     <Dialog
+  open={!!selectedProductForComments}
+  onClose={closeCommentsModal}
+  fullScreen={isXs}
+  maxWidth={false}
+  fullWidth={false}
+
+  PaperProps={{
+    sx: {
+      m: 0,
+      margin:'auto',
+      p: 0,
+      borderRadius: 2,
+      width: { xs: '100%', md: '90%' },
+      boxShadow:
+        theme.palette.mode === 'dark'
+          ? '0 20px 40px rgba(0,0,0,0.6)'
+          : 10,
+      bgcolor: theme.palette.background.paper,
+      height: { xs: '95vh', md: '90vh' },
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+    },
+  }}
+>
           {selectedProductForComments && (
             <>
               {/* Close Button */}
